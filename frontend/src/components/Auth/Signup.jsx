@@ -1,21 +1,50 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const Signup = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await axios.post('http://127.0.0.1:3000/api/users/register', {
+      name,email,password
+    },{
+      withCredentials: true, // Include cookies
+    });
+    if(response) console.log('response: ',response.data);
+  }
+
   return (
     <div className='flex h-screen w-screen items-center justify-center'>
         <div className='px-12 py-8 bg-white rounded-xl shadow-lg shadow-cyan-800'>
           <h1 className='text-3xl font-semibold  text-black '>Sign In</h1>
           <h1 className='border-b-2 border-black w-24'></h1>
-            <form 
+            <form
+            onSubmit={(e) => {
+              handleSubmit(e)
+            }} 
             required
             className='flex flex-col gap-5 mt-5 text-black'>
                <input 
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                }}
                 required
                 className='border-b-2 py-3 text-[1.2rem] placeholder:text-gray-500 outline-none' type="email"  placeholder='Fullname'/>
-                <input 
+                <input
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                }} 
                 required
                 className='border-b-2 py-3 text-[1.2rem] placeholder:text-gray-500 outline-none' type="email"  placeholder='Email Address'/>
-                <input 
+                <input
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                }} 
                 className='border-b-2 py-3  text-[1.2rem] placeholder:text-gray-500 outline-none' type="password" placeholder='Password'/>
                 <p className='text-blue-600 hover:text-blue-800'>Forgot password?</p>
                 <button className=' w-full border-none text-white bg-[#044c69] py-2 px-6 rounded text-xl outline-none' type='submit'>Sign In</button>

@@ -4,7 +4,7 @@ import Schedule from '../models/schedule.model.js';
 
 const scheduleDetails = new Schedule();
 export async function scheduleMeeting(req,res){
-    const { title, desc, when, duration} = req.body;
+    const { title, desc, startTime, duration} = req.body;
     // const dur = new Date(when);
     // const endTime =  new Date(dur.getTime() + duration * 60000);
     // console.log('dur: ',dur );
@@ -20,10 +20,10 @@ export async function scheduleMeeting(req,res){
     const scheduleDetails = new Schedule({
         title: title,
         description: desc,
-        startTime: when,
+        startTime: startTime,
         duration: duration,
         isHost: true,
-        user: req.session.username,
+        user: "Ram",
         meetingId: meetingID,
         password: meetingPassword
     });

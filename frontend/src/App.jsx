@@ -8,6 +8,7 @@ import ChatRoom from './components/MeetingRoom/ChatRoom'
 import ConferenceRoom from './components/MeetingRoom/ConferenceRoom'
 import JoinRoom from './components/Meeting/JoinRoom'
 import Schedule from './components/Meeting/Schedule'
+import ScheduleDetails from './components/Meeting/ScheduleDetails'
 
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
   return (
     <>
      <div>
-      <ConferenceRoom />
+      <JoinRoom />
      </div>
     </>
   )

@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js'
 const saltRounds = 10;
 export async function login(req,res){
-    const { userName, psw: password } = req.body;
-    if(userName && password){
-        const data = await User.findOne({username: userName});
+    const { email, password } = req.body;
+    if(email && password){
+        const data = await User.findOne({username: email});
         console.log('data:',data.password);
         const hash = data.password;
         //   Load hash from your password DB.
@@ -13,7 +13,7 @@ export async function login(req,res){
             if(result){
                 console.log('result: ',result);
                 // res.send(result);       
-                req.session.user = { username: userName, role: data.role };
+                req.session.user = { username: email, role: data.role };
                 console.log('name: ',req.session.user);
                 console.log('cookie: ',req.session);
                 // res.redirect('./index.html');
@@ -27,7 +27,7 @@ export async function login(req,res){
                   })
             }
             else{
-                console.log('error matching password: ',err);
+                res.send({valid: false});
             }
         });
     }
@@ -86,7 +86,7 @@ export async function register(req,res){
 export async function checkSession(req,res){
     if(req.session.user){
         console.log('session found');
-        res.send({name: req.session.user.username, loggedIn: true})
+        res.send({name: req.session.user, loggedIn: true})
        
     }        
     else{

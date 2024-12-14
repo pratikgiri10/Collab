@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import socket from "../../services/Socket/socket";
 import { initializeDevice } from '../../services/MediaSoup/initializeDevice';
 import { chatroom } from '../../services/MediaSoup/room';
+import { forwardRef } from 'react';
 
 const AudioStream = ({mediaStream}) => {
      const remoteAudioRef = useRef(null);
@@ -20,38 +21,44 @@ const AudioStream = ({mediaStream}) => {
     />
   );
 }
-const VideoStream = ({mediaStream, type}) => {
-    const remoteVideoRef = useRef(null);
+
+const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
+    // const remoteVideoRef = useRef({});
 
   useEffect(() => {
-    if (remoteVideoRef.current && mediaStream) {
-      remoteVideoRef.current.srcObject = mediaStream;
+    if (remoteVideoRef.current[props.id] && props.mediaStream) {
+      remoteVideoRef.current[props.id].srcObject = props.mediaStream;
     }
-  }, [mediaStream]);
+  }, [props.mediaStream]);
 
   return (
     <video
-      ref={remoteVideoRef}
-      autoPlay
-      playsInline
-      muted={false} // Change to true if you want the video to be muted
-      className="w-[200px] h-[150px] bg-white rounded-xl"
+    ref={(el) => (remoteVideoRef.current[props.id] = el)}
+    defaultValue={props.type}
+    autoPlay
+    playsInline
+    muted={false} // Change to true if you want the video to be muted
+    className="w-[200px] h-[150px] bg-white rounded-xl"
     />
   );
-}
+})
 
 const VideoRoom = () => {
     const [remoteType, setRemoteType] = useState([]);
     const [producerTransport, setProducerTransport] = useState(null);
 
-    const addRemoteType = ({stream,type}) => {
+    const addRemoteType = ({stream,type,id}) => {
         console.log('stream add: ',stream)
         console.log('type: ',type)        
-        setRemoteType((prev) => [...prev, {stream,type}])        
+        setRemoteType((prev) => [...prev, {stream,type,id}])        
     }
+
+    const leaveMeeting = () => {
+
+    }
+
     const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef(null);
-    const remoteAudioRef = useRef(null);
+    const remoteVideoRef = useRef({});
 
     const displayMediaOptions = {
         video: {
@@ -115,10 +122,28 @@ const VideoRoom = () => {
             console.log("inform about new producer: ",producerId);
             newConsumer(producerId);
         })
-
+        socket.on('producer-closed', (remoteProducerId) => {
+            // server notification is received when a producer is closed
+            // we need to close the client-side consumer and associated transport
+            console.log('producer-closed event: ',consumerTransports);
+            console.log('remoteProducerId: ',remoteProducerId);
+            const producerToClose = consumerTransports.find(transportData => transportData.producerId === remoteProducerId);
+            console.log('producerToClose: ',producerToClose);
+            producerToClose.recvTransport.close()
+            producerToClose.consumer.close()
+            
+            // remove the consumer transport from the list
+            consumerTransports = consumerTransports.filter(transportData => transportData.producerId !== remoteProducerId)
+          
+            // remove the video div element
+            // document.querySelector('.video').removeChild(document.getElementById(`td-${remoteProducerId}`));
+          })
      
     }
     init();
+    return () => {
+        socket.close();
+      };
     }, [])
 
 
@@ -346,7 +371,7 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
 
                 const stream = new MediaStream([ track ]);
 
-                addRemoteType({stream,type:params.kind});
+                addRemoteType({stream,type:params.kind, id: remoteProducerId});
                 // console.log('remote type: ',remoteType)
                 if(videostream){
                     console.log('remote stream: ',videostream);
@@ -378,8 +403,8 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
             autoPlay playsInline ></video>
             
             <div>                   
-            {remoteType.filter((elem) => elem.type == 'video').map(({stream,type}) => {
-                return <VideoStream key={stream.id} mediaStream={stream} type={type} />                
+            {remoteType.filter((elem) => elem.type == 'video').map(({stream,type,id}) => {
+                return <VideoStream key={stream.id} mediaStream={stream} type={type} id={id} ref={remoteVideoRef}/>                
             })}
             </div> 
             <div>                   
@@ -410,7 +435,9 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
                 <button className='bg-[#044c69] px-4 py-2'>Chats</button>
             </div>
             <div className='flex gap-4'>
-                <button className='bg-[#044c69] px-4 py-2'>Leave</button>
+                <button 
+                onClick={leaveMeeting}
+                className='bg-[#044c69] px-4 py-2'>Leave</button>
                 <button className='bg-[#044c69] px-4 py-2'>End</button>
             </div>
         </div>

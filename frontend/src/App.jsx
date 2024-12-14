@@ -9,15 +9,25 @@ import ConferenceRoom from './components/MeetingRoom/ConferenceRoom'
 import JoinRoom from './components/Meeting/JoinRoom'
 import Schedule from './components/Meeting/Schedule'
 import ScheduleDetails from './components/Meeting/ScheduleDetails'
+import { Route, Routes } from 'react-router-dom'
 
 
 function App() {
  
   return (
     <>
-     <div>
-      <JoinRoom />
-     </div>
+    <Routes>
+      <Route path='/' element={<Home/>}></Route>
+      <Route path='/signin' element={<Signin />}></Route>
+      <Route path='/signup' element={<Signup />}></Route>
+      <Route path='/meetingroom' element={<ConferenceRoom />}></Route>
+      <Route path='/chatroom' element={<ChatRoom />}></Route>
+      <Route path='/schedulemeeting' element={<Schedule />}></Route>
+      <Route path='/meetingdetails' element={<ScheduleDetails />}></Route>
+      <Route path='/joinmeeting' element={<JoinRoom />}></Route>
+    </Routes>
+     
+     
     </>
   )
 }

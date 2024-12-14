@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 const JoinRoom = () => {
   const [meetingId, setMeetingId] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await axios.post('http://localhost:3000/api/rooms/join', {
@@ -11,7 +12,10 @@ const JoinRoom = () => {
     },{
       withCredentials: true, // Include cookies
     })
-    if(response) console.log('response: ',response);
+    if(response.data.valid){
+      console.log('response: ',response);
+      navigate('/meetingroom')
+    } 
   }
 
   return (

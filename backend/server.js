@@ -12,6 +12,7 @@ import scheduleRoutes from './routes/scheduleRoutes.js';
 import { initialize } from './services/transportService.js';
 import { checkPermission } from './middlewares/rbac.js';
 import { deleteMeeting } from './controllers/meeting.controller.js';
+import { isAuthenticated } from './middlewares/authenticated.js';
 
 dotenv.config({
     path: './env'
@@ -43,9 +44,9 @@ app.use(session({
         }
   }))
 app.use('/api/users',userRoutes);
-app.use('/api/rooms', roomRoutes);
+app.use('/api/rooms', isAuthenticated, roomRoutes);
 app.use('/api/session',sessionRoutes);
-app.use('/api/meeting', scheduleRoutes);
+app.use('/api/meeting', isAuthenticated, scheduleRoutes);
 
 app.get('/api/delete',deleteMeeting);
 // function isAuthenticated (req, res, next) {

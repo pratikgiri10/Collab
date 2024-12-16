@@ -1,21 +1,25 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-
+import {useNavigate} from 'react-router-dom'
 const Schedule = () => {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [startTime, setStartTime] = useState('');
   const [duration, setDuration] = useState('');
 
+    const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(title,desc, startTime, duration)
     try{
       const response = await axios.post('http://localhost:3000/api/meeting/schedule', {
         title,desc,startTime,duration
+      },{
+        withCredentials: true
       })
       if(response){
         console.log('response: ',response.data)
+        navigate('/meetingdetails');
       }
     }catch(e){
       console.log("error posting data: ",e)

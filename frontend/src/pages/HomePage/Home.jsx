@@ -52,7 +52,7 @@ const Home = () => {
                 onClick={() => {
                     scheduleMeeting();
                 }}
-                className='text-xl bg-[#044c69] hover:bg-transparent hover:text-black text-white px-8 py-2 w-1/2'>Schedule</button>
+                className='text-xl bg-[#044c69] hover:bg-cyan-700 text-white px-8 py-2 w-1/2'>Schedule</button>
             </div>
             <div className='flex flex-col gap-8 items-end text-right bg-[#044c69] px-8 py-10 text-white h-[400px] w-1/2 rounded-3xl'>
                 <h1 className='text-4xl leading-snug'>Hey there,<br/><span>Join the Meeting</span></h1>
@@ -61,7 +61,7 @@ const Home = () => {
                  onClick={() => {
                     joinMeeting();
                 }}
-                className='text-xl bg-white hover:bg-transparent hover:text-white text-black px-8 py-2 w-1/2'>Join</button>
+                className='text-xl bg-white hover:bg-gray-300 text-black px-8 py-2 w-1/2'>Join</button>
             </div>
         </div>
     </div>

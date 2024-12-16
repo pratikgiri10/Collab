@@ -4,6 +4,8 @@ import socket from "../../services/Socket/socket";
 import { initializeDevice } from '../../services/MediaSoup/initializeDevice';
 import { chatroom } from '../../services/MediaSoup/room';
 import { forwardRef } from 'react';
+import {NavigationType, useNavigate} from 'react-router-dom'
+import { useLocation } from 'react-router-dom';
 
 const AudioStream = ({mediaStream}) => {
      const remoteAudioRef = useRef(null);
@@ -24,7 +26,7 @@ const AudioStream = ({mediaStream}) => {
 
 const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
     // const remoteVideoRef = useRef({});
-
+    console.log('props id: ',props.id)
   useEffect(() => {
     if (remoteVideoRef.current[props.id] && props.mediaStream) {
       remoteVideoRef.current[props.id].srcObject = props.mediaStream;
@@ -38,7 +40,7 @@ const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
     autoPlay
     playsInline
     muted={false} // Change to true if you want the video to be muted
-    className="w-[200px] h-[150px] bg-white rounded-xl"
+    className="bg-white rounded-xl w-[200px] h-[150px]"
     />
   );
 })
@@ -46,19 +48,65 @@ const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
 const VideoRoom = () => {
     const [remoteType, setRemoteType] = useState([]);
     const [producerTransport, setProducerTransport] = useState(null);
-
+    const [remoteUserId, setRemoteUserId] = useState(null);
+    const [pauseProducer, setPauseProducer] = useState(null);
+    const localVideoRef = useRef(null);
+    const remoteVideoRef = useRef({});
+    const navigate = useNavigate();
+    const location = useLocation();
     const addRemoteType = ({stream,type,id}) => {
         console.log('stream add: ',stream)
         console.log('type: ',type)        
         setRemoteType((prev) => [...prev, {stream,type,id}])        
     }
 
-    const leaveMeeting = () => {
+    const leaveMeeting = (remoteUser) => {
+        console.log(remoteUser)
+        if(remoteUser){
+            remoteVideoRef.current[remoteUser].remove();
+            
+        }
+    }
+    const disconnectSocket = () => {
+        socket.disconnect();
+        navigate('/');
+        window.location.reload();
+    }
+    const disconnectServerSocket = () => {
+        navigate('/');
+        window.location.reload();
+        socket.emit('endMeeting',roomId);
+    }
+    const toggleVideo = () => {
+        console.log('clicked')
+        
+        // remoteVideoRef.current[socket.id].srcObject.getVideoTracks()[0].enabled = false;
+
+        socket.emit('pauseProducer',socket.id, async ({value}) => {
+            if(value){
+                if(pauseProducer.paused){
+                  
+                    localVideoRef.current.srcObject.getVideoTracks()[0].enabled = true;
+                    pauseProducer.resume();
+                   
+                   
+                    console.log('video resumed')
+                }
+                else{
+                    localVideoRef.current.srcObject.getVideoTracks().forEach((track) => {
+                        track.enabled = false;
+                    })
+                    pauseProducer.pause();
+                    console.log('video paused');
+                }
+                
+            }
+            
+        })
+    }
+    const toggleAudio = () => {
 
     }
-
-    const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef({});
 
     const displayMediaOptions = {
         video: {
@@ -82,12 +130,12 @@ const VideoRoom = () => {
     let videoProducer;
     let audioProducer;
     let screenProducer;
-
+      let stream;
     let consumer;
     let consumerTransports = [];
     let videostream;
 
-    const roomId = 'dLlwcM757iXm';
+    const roomId = location.state.roomId;
     const userName = 'Pratik'
     console.log('roomid: ',roomId);
 
@@ -103,7 +151,7 @@ const VideoRoom = () => {
         
         //get your local media stream
        
-          localVideoRef.current.srcObject = await navigator.mediaDevices.getUserMedia({video: true});
+        //   localVideoRef.current.srcObject = await navigator.mediaDevices.getUserMedia({video: true});
         
 
         //load device
@@ -134,7 +182,7 @@ const VideoRoom = () => {
             
             // remove the consumer transport from the list
             consumerTransports = consumerTransports.filter(transportData => transportData.producerId !== remoteProducerId)
-          
+            leaveMeeting(socket.id);
             // remove the video div element
             // document.querySelector('.video').removeChild(document.getElementById(`td-${remoteProducerId}`));
           })
@@ -213,26 +261,33 @@ const VideoRoom = () => {
     //produce media
     async function produceMedia(){
         console.log("producing media")
-        const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: {
+        stream = await navigator.mediaDevices.getUserMedia({video: {frameRate: 15}, audio: {
             echoCancellation: true,
             noiseSuppression: true,
             sampleRate: 44100,
             suppressLocalAudioPlayback: true,
         }});
-        
-        // localVideo.srcObject = stream;
+        localVideoRef.current.srcObject = stream;
         const videoTrack = stream.getVideoTracks()[0];
         const audioTrack = stream.getAudioTracks()[0];
         
        
-        // console.log(track)
+      
         try{
             console.log('before producing')
             videoProducer = await sendTransport.produce({
                 track: videoTrack,
-               
+                encodings: [
+                    { maxBitrate: 100000 }, // Low resolution
+                    { maxBitrate: 300000 }, // Medium resolution
+                    { maxBitrate: 900000 }, // High resolution
+                ],
+                codecOptions: {
+                    videoGoogleStartBitrate: 1000
+                }              
     
             });
+            setPauseProducer(videoProducer);
             audioProducer = await sendTransport.produce({track: audioTrack});
             
             console.log("produced media")
@@ -371,7 +426,8 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
 
                 const stream = new MediaStream([ track ]);
 
-                addRemoteType({stream,type:params.kind, id: remoteProducerId});
+                addRemoteType({stream,type:params.kind, id: socket.id});
+                setRemoteUserId(socket.id);
                 // console.log('remote type: ',remoteType)
                 if(videostream){
                     console.log('remote stream: ',videostream);
@@ -385,39 +441,31 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
     
 }
 
-
-
-
-
-
-
-
-
   return (
     <div className='h-screen p-8 w-2/3'>
-        <div className='bg-zinc-800 w-full h-[90%] flex flex-wrap justify-evenly items-center p-4 rounded-2xl'>
+        <div className='bg-zinc-800 w-full h-[90%] flex flex-wrap gap-2 p-1 rounded-2xl'>
             <video
             id='localVideo'
             ref={localVideoRef}
-            className='w-[200px] h-[150px] bg-white rounded-xl'
+            className='rounded-xl w-[200px] h-[150px]'
             autoPlay playsInline ></video>
             
-            <div>                   
+                          
             {remoteType.filter((elem) => elem.type == 'video').map(({stream,type,id}) => {
                 return <VideoStream key={stream.id} mediaStream={stream} type={type} id={id} ref={remoteVideoRef}/>                
             })}
-            </div> 
-            <div>                   
+           
+            {/* <div>                   
             {remoteType.filter((elem) => elem.type == 'screen').map(({stream,type}) => {
                 return <VideoStream key={stream.id} mediaStream={stream} type={type} />                
             })}
-            </div> 
-            <div >   
+            </div>  */}
+           
             {remoteType.filter((elem) => elem.type == 'audio').map(({stream}) => {
                return <AudioStream key={stream.id} mediaStream={stream} />        
             
             })}
-            </div>
+            
             
             
         </div>
@@ -425,20 +473,26 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
             <div className='flex gap-4'>
                 <button
                  className='bg-[#044c69] px-4 py-2'>Start</button>
-                <button className='bg-[#044c69] px-4 py-2'>Audio</button>
-                <button className='bg-[#044c69] px-4 py-2'>Video</button>
+                <button 
+                onClick={toggleAudio}
+                className='bg-[#044c69] px-4 py-2'>Audio</button>
+                <button 
+                onClick={toggleVideo}
+                className='bg-[#044c69] px-4 py-2'>Video</button>
             </div>
             <div className='flex gap-4'>
                 <button
                 onClick={shareScreen}
                 className='bg-[#044c69] px-4 py-2'>Share Screen</button>
-                <button className='bg-[#044c69] px-4 py-2'>Chats</button>
+                {/* <button className='bg-[#044c69] px-4 py-2'>Chats</button> */}
             </div>
             <div className='flex gap-4'>
                 <button 
-                onClick={leaveMeeting}
+                onClick={disconnectSocket}
                 className='bg-[#044c69] px-4 py-2'>Leave</button>
-                <button className='bg-[#044c69] px-4 py-2'>End</button>
+                <button 
+                onClick={disconnectServerSocket}
+                className='bg-[#044c69] px-4 py-2'>End</button>
             </div>
         </div>
     </div>

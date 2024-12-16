@@ -38,17 +38,16 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
          secure: false,
-         httpOnly: false,
-        //  sameSite: 'lax',
-        //  maxAge: 1000 * 60 * 60 * 24,
+         httpOnly: true,       
+         maxAge: 1000 * 60 * 60 * 24,
         }
   }))
 app.use('/api/users',userRoutes);
 app.use('/api/rooms', isAuthenticated, roomRoutes);
 app.use('/api/session',sessionRoutes);
-app.use('/api/meeting', isAuthenticated, scheduleRoutes);
+app.use('/api/meeting',isAuthenticated, scheduleRoutes);
 
-app.get('/api/delete',deleteMeeting);
+// app.get('/api/delete',deleteMeeting);
 // function isAuthenticated (req, res, next) {
 //     if (req.session.user) next()
 //     else res.send('not authenticated.')

@@ -1,6 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {message,recvChat} from '../../services/Chat/chatService'
-
+const Chat = ({msg,userId, remoteUserId}) => {
+  if(userId == remoteUserId){
+    return <div className='flex justify-end ' >
+      <p className='bg-[#044c69] px-4 py-1 rounded mb-3'>{msg}</p>
+  </div>
+  }
+  else{
+    return <div className='flex justify-start ' >
+    <p className='bg-zinc-700 px-4 py-1 rounded mb-3'>{msg}</p>
+</div>
+  }
+  
+}
 const ChatRoom = () => {
   const [msgInput, setMsgInput] = useState('');
   const [recvMsg, setRecvMsg] = useState([]);
@@ -12,9 +24,9 @@ const ChatRoom = () => {
     setMsgInput('');
     
   }
-  const recvMessage = (msg) => {
+  const recvMessage = (msg,userId, remoteUserId) => {
     console.log("recv msg: ",msg.content)
-    setRecvMsg((prev) => [...prev, msg.content]);
+    setRecvMsg((prev) => [...prev, {content: msg.content, userId, remoteUserId}]);
     
   }
   useEffect(() => {
@@ -31,10 +43,8 @@ const ChatRoom = () => {
     <div className='text-white flex p-8 h-screen w-1/3'>
       <div className='bg-zinc-800 w-full p-4 rounded-xl flex flex-col justify-end gap-6'>
         <div id='scroll' ref={ chatRef } className='text-xl flex flex-col gap-4 overflow-y-auto'>
-          {recvMsg.map((msg,idx) => {
-            return <div key={idx} className='flex justify-end ' >
-             <p className='bg-[#044c69] px-4 py-1 rounded mb-3'>{msg}</p>
-            </div>
+          {recvMsg.map((msg,index) => {
+            return <Chat key={index} msg={msg.content} userId={msg.userId} remoteUserId={msg.remoteUserId}/>
           })}           
          
          

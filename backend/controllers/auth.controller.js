@@ -5,7 +5,7 @@ const saltRounds = 10;
 export async function login(req,res){
     const { email, password } = req.body;
     if(email && password){
-        const data = await User.findOne({username: email});
+        const data = await User.findOne({email: email});
         console.log('data:',data.password);
         const hash = data.password;
         //   Load hash from your password DB.
@@ -14,7 +14,7 @@ export async function login(req,res){
                 console.log('result: ',result);
                 // res.send(result);       
                 req.session.user = { username: email, role: data.role };
-                console.log('name: ',req.session.user);
+                console.log('name: ',req.session.user.username);
                 console.log('cookie: ',req.session);
                 // res.redirect('./index.html');
                 // res.send({'message': 'User logged in and session data saved'});
@@ -40,17 +40,17 @@ export async function login(req,res){
 }
 
 export async function register(req,res){
-    const { userName, email, psw: password } = req.body;
+    const { name, email, password } = req.body;
     const adminEmail = 'pratikgiri2320@gmail.com';
     let role = 'user';
-    if(userName && email && password){
+    if(name && email && password){
         
-        const name = await User.findOne({username: userName});
-        if(!name){
+        const user = await User.findOne({email: email});
+        if(!user){
             if(adminEmail == email){
                 role = 'admin';
             }
-            console.log('name: ',name);
+            console.log('name: ',user);
             // jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' }, function(err, token) {
             //     console.log(token);
             //   });
@@ -59,7 +59,7 @@ export async function register(req,res){
                     // Store hash in your password DB.
                     console.log("password: ",hash);
                     const user = new User({
-                        username: userName,
+                        name: name,
                         email: email,
                         password: hash,
                         role: role
@@ -71,7 +71,7 @@ export async function register(req,res){
            
         }
         else{
-            console.log('name: ',name);
+            console.log('name: ',user);
             res.send({'error': 'this username already exists'});
         }
         

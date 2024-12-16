@@ -25,7 +25,7 @@ function message(socket,io,userId,roomId){
     socket.on('chat',async (msg) => {
         // await client.rPush(roomId, JSON.stringify(msg));
         console.log('msg sent: ',msg);
-        io.emit('recvChat',{msg,userId});
+        io.to(roomId).emit('recvChat',{msg,userId});
     })
 }
 async function receivePrevMessage(roomId){

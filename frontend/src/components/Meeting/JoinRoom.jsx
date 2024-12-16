@@ -12,10 +12,16 @@ const JoinRoom = () => {
     },{
       withCredentials: true, // Include cookies
     })
-    if(response.data.valid){
-      console.log('response: ',response);
-      navigate('/meetingroom')
-    } 
+   
+  
+      if(response.data.valid){
+        console.log('response: ',response);
+        navigate('/meetingroom', {state : { roomId : meetingId }})
+      } 
+      else{
+        console.log('not valid')
+      }
+   
   }
 
   return (
@@ -42,7 +48,7 @@ const JoinRoom = () => {
                   setPassword(e.target.value);
                 }}  
                 className='border-b-2 py-3  text-[1.2rem] placeholder:text-gray-500 outline-none' type="password" placeholder='Password'/>                
-                <button className=' w-full border-none text-white bg-[#044c69] py-2 px-6 rounded text-xl outline-none' type='submit'>Join</button>
+                <button className=' w-full border-none text-white bg-[#044c69] py-2 px-6 rounded text-xl outline-none hover:cursor-pointer hover:opacity-90' type='submit'>Join</button>
                 
             </form>
         </div>

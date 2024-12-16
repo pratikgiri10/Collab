@@ -73,6 +73,21 @@ export async function initialize(io){
           
               return items
         }
+        socket.on('endMeeting', (id) => {
+            io.in(id).disconnectSockets(true);
+            console.log('meeting ended');
+            
+        })
+        socket.on('pauseProducer', async (userId,callback) => {
+            const [pauseProducer] = producers.filter((data) => data.socketId == userId && data.kind == 'video');
+            
+            if(pauseProducer){
+                console.log('pause producer: ',pauseProducer.producer)
+                // pauseProducer.producer.pause();
+            }
+            
+            callback({value: true});
+        })
         socket.on('disconnect', () => {
             console.log(' A User disconnected: ',socket.id);           
             console.log('transport: ',transports)
@@ -272,7 +287,7 @@ export async function initialize(io){
                 //adding producer to producers
                 producers = [
                     ...producers,
-                    {producer,socketId: socket.id,roomId}
+                    {producer,socketId: socket.id,roomId,kind}
                 ]
                 console.log("producers: ",producers);
                 // console.log("producers id: ",producers.producer);

@@ -26,7 +26,7 @@ export async function recvChat(recvMessage){
    
     socket.on('recvChat',({msg,userId}) => {
         console.log('msg received: ',msg);
-       recvMessage(msg);
+       recvMessage(msg,socket.id,userId);
         // displayMessage(msg,socket.id,userId);
     })
    

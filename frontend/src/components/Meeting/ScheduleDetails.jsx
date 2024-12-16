@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const ScheduleDetails = () => {
   const [details, setDetails] = useState([]);
   const startRef = useRef({});
@@ -17,7 +17,12 @@ const ScheduleDetails = () => {
     }
     meetingDetails();
    }, [])
-   
+   const editMeeting = (roomId) => {
+    const selectData = details.find((data) => data.meetingId == roomId)
+    if(details){
+      navigate('/schedulemeeting', { state : { selectData }})
+    }
+   }
    const startMeeting = (roomId) => {
     if(roomId){
       console.log(roomId)
@@ -25,6 +30,8 @@ const ScheduleDetails = () => {
 
     }
    }
+
+   
 
    const deleteMeeting = async (id,e) => {
     console.log("id: ",id)
@@ -45,7 +52,7 @@ const ScheduleDetails = () => {
   return (
     <div className='bg-white h-screen py-10 px-20 flex flex-col gap-6'>
        {details.map((data,idx) => {
-          return <div key={idx} className='flex flex-col gap-5 w-2/3 '>
+          return <div key={idx} className='flex flex-col gap-5 w-2/3'>
               <div className='flex items-center justify-between'>
                 <h1 className='text-xl font-medium'>Title:</h1>
                 <p className='text-xl'>{data.title}</p>
@@ -68,7 +75,7 @@ const ScheduleDetails = () => {
                 <h1 className='text-xl font-medium'>Password:</h1>
                 <p className='text-xl'>{data.password}</p>
               </div>
-              <div className='flex gap-2'>
+              <div className='flex gap-2 text-white'>
                 <button 
                 onClick={() => {
                   startMeeting(data.meetingId)

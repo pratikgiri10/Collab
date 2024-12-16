@@ -40,7 +40,7 @@ const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
     autoPlay
     playsInline
     muted={false} // Change to true if you want the video to be muted
-    className="bg-white rounded-xl w-[200px] h-[150px]"
+    className="rounded-xl w-[200px] h-[150px]"
     />
   );
 })

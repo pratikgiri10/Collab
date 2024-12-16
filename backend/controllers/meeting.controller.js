@@ -36,11 +36,28 @@ export async function meetingDetails(req,res){
     }
     
 }
-export async function getMeetingId(req,res){
-    const id = req.params;
-    console.log('meeting id: ',meetingId);
+export async function getByMeetingId(req,res){
+    const {id} = req.params;
+    console.log('meeting id: ',id);
     const meetingId = await Schedule.find({meetingId: id});
     res.send(meetingId);
+}
+export async function updateByMeetingId(req,res){
+   
+    const {id} = req.params;
+    console.log('meeting id: ',id);
+    const {title, desc:description, startTime, duration} = req.body;
+    console.log(req.body);
+    console.log(title)
+   
+    try{
+        await Schedule.findOneAndUpdate({meetingId: id},{title, description, startTime, duration},{new: true});
+        res.send({success: true});
+    }catch(err){
+        console.log(err);
+        res.send({success: false});
+    }
+    
 }
 export async function deleteMeeting(req,res){
    const { id } = req.body;

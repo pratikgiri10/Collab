@@ -23,7 +23,7 @@ async function createWebRtcTransport(router){
                     [
                       {
                         ip               : "0.0.0.0", 
-                        announcedIp      : "192.168.1.37"
+                        announcedIp      : "127.0.0.1"
                         
                       }
                     ],

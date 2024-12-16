@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js'
 const saltRounds = 10;
 export async function login(req,res){
@@ -16,8 +15,6 @@ export async function login(req,res){
                 req.session.user = { username: email, role: data.role };
                 console.log('name: ',req.session.user.username);
                 console.log('cookie: ',req.session);
-                // res.redirect('./index.html');
-                // res.send({'message': 'User logged in and session data saved'});
                 req.session.save(function (err) {
                     if (err){
                         console.log(err);

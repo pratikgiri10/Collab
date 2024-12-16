@@ -9,27 +9,27 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const validate = () => {
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!emailRegex.test(email)){
-      newErrors.email = 'Invalid Email Format.';
-    }
-    if(password.length < 8){
-      newErrors.password = 'Password must be at least 8 characters long.'
-    }
-    if(password != confirmPassword){
-      newErrors.confirmPassword = 'Passwords do not match.'
-    }
-    setErrors(newErrors);
+  // const validate = () => {
+  //   const newErrors = {};
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if(!emailRegex.test(email)){
+  //     newErrors.email = 'Invalid Email Format.';
+  //   }
+  //   if(password.length < 8){
+  //     newErrors.password = 'Password must be at least 8 characters long.'
+  //   }
+  //   if(password != confirmPassword){
+  //     newErrors.confirmPassword = 'Passwords do not match.'
+  //   }
+  //   setErrors(newErrors);
 
-    return Object.keys(newErrors).length === 0;
-  }
+  //   return Object.keys(newErrors).length === 0;
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(validate())
-    if(!validate) return
+   
+    
     try{
       const response = await axios.post('http://127.0.0.1:3000/api/users/register', {
         name,email,password
@@ -71,7 +71,7 @@ const Signup = () => {
                 }}
                 required
                 className='border-b-2 py-3 text-[1.2rem] placeholder:text-gray-500 outline-none' type="email"  placeholder='Email Address'/>
-                 {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+                
                 <input
                 value={password}
                 onChange={(e) => {
@@ -79,14 +79,14 @@ const Signup = () => {
                 }}
                 required 
                 className='border-b-2 py-3  text-[1.2rem] placeholder:text-gray-500 outline-none' type="password" placeholder='Password'/>
-                <input
+                {/* <input
                 value={confirmPassword}
                 onChange={(e) => {
                   setConfirmPassword(e.target.value)
                 }}
                 required 
                 className='border-b-2 py-3  text-[1.2rem] placeholder:text-gray-500 outline-none' type="password" placeholder='Confirm Password'/>
-                <button className=' w-full border-none text-white bg-[#044c69] py-2 px-6 rounded text-xl outline-none' type='submit'>Sign Up</button>
+                <button className=' w-full border-none text-white bg-[#044c69] py-2 px-6 rounded text-xl outline-none' type='submit'>Sign Up</button> */}
             </form>
         </div>
     </div>

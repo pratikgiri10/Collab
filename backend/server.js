@@ -9,6 +9,7 @@ import userRoutes from './routes/userRoutes.js';
 import roomRoutes from './routes/roomRoutes.js';
 import sessionRoutes from './routes/sessionRoutes.js';
 import scheduleRoutes from './routes/scheduleRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import { initialize } from './services/transportService.js';
 import { checkPermission } from './middlewares/rbac.js';
 import { deleteMeeting } from './controllers/meeting.controller.js';
@@ -43,6 +44,7 @@ app.use(session({
         }
   }))
 app.use('/api/users',userRoutes);
+app.use('/api/admin',adminRoutes);
 app.use('/api/rooms', isAuthenticated, roomRoutes);
 app.use('/api/session',sessionRoutes);
 app.use('/api/meeting',isAuthenticated, scheduleRoutes);

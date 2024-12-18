@@ -36,49 +36,48 @@ export async function login(req,res){
    
 }
 
-export async function register(req,res){
-    const { name, email, password } = req.body;
-    const adminEmail = 'pratikgiri2320@gmail.com';
-    let role = 'user';
-    if(name && email && password){
+export async function register(req, res) {
+    try {
+        const { name, email, password } = req.body;
+        const adminEmail = 'pratikgiri2320@gmail.com';
         
-        const user = await User.findOne({email: email});
-        if(!user){
-            if(adminEmail == email){
-                role = 'admin';
-            }
-            console.log('name: ',user);
-            // jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' }, function(err, token) {
-            //     console.log(token);
-            //   });
-            bcrypt.genSalt(saltRounds, async function(err, salt) {
-                bcrypt.hash(password, salt, async function(err, hash) {
-                    // Store hash in your password DB.
-                    console.log("password: ",hash);
-                    const user = new User({
-                        name: name,
-                        email: email,
-                        password: hash,
-                        role: role
-                    });
-                    await user.save();
-                });
-            });
-            res.status(200).json({msg: 'success'});
-           
+        // Input validation
+        if (!name || !email || !password) {
+            return res.status(400).json({ error: 'Please fill all the fields' });
         }
-        else{
-            console.log('name: ',user);
-            res.send({'error': 'this username already exists'});
+        // Drop a specific index
+        // await User.collection.dropIndexes()
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
+            return res.status(409).json({ error: 'User with this email already exists' });
         }
-        
-    }
-    else{
-        res.send('please fill all the fields');
-    }
-    
 
+        // Determine role
+        const role = email === adminEmail ? 'admin' : 'user';
 
+        // Hash password
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Create new user
+        const newUser = new User({
+            name: name,
+            email: email,
+            password: hashedPassword,
+            role: role
+        });
+
+        // Save user
+        await newUser.save();
+
+        res.status(201).json({ msg: 'User registered successfully' });
+
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ error: 'Server error during registration' });
+    }
 }
 export async function checkSession(req,res){
     if(req.session.user){

@@ -36,12 +36,34 @@ const Signup = () => {
       },{
         withCredentials: true, // Include cookies
       });
-      if(response.Ok){
-        console.log('response: ',response.data);
+      if(response.status == 201){
+        console.log('response: ',response.statusText);
         navigate('/signin');
       } 
-    }catch(err){
-      console.log(err);
+    }catch(error){
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Registration failed:", error.response.data);  // Log the server's error message
+  
+        if (error.response.status === 409) {
+            // Specific handling for 409 Conflict
+            alert("A user with that email or username already exists."); // Show a user-friendly error
+            // ... other actions like updating state to display the error message
+        } else {
+            alert("An error occurred during registration. Please try again later."); // Generic error for other status codes
+        }
+  
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received:", error.request);
+        alert("No response from the server. Check your network connection.");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error setting up request:", error.message);
+        alert("An error occurred. Please try again later.");
+      }
+    
     }
     
   }
@@ -85,8 +107,8 @@ const Signup = () => {
                   setConfirmPassword(e.target.value)
                 }}
                 required 
-                className='border-b-2 py-3  text-[1.2rem] placeholder:text-gray-500 outline-none' type="password" placeholder='Confirm Password'/>
-                <button className=' w-full border-none text-white bg-[#044c69] py-2 px-6 rounded text-xl outline-none' type='submit'>Sign Up</button> */}
+                className='border-b-2 py-3  text-[1.2rem] placeholder:text-gray-500 outline-none' type="password" placeholder='Confirm Password'/>*/}
+                <button className=' w-full border-none text-white bg-[#044c69] py-2 px-6 rounded text-xl outline-none' type='submit'>Sign Up</button>
             </form>
         </div>
     </div>

@@ -10,6 +10,7 @@ import JoinRoom from './components/Meeting/JoinRoom'
 import Schedule from './components/Meeting/Schedule'
 import ScheduleDetails from './components/Meeting/ScheduleDetails'
 import { Route, Routes } from 'react-router-dom'
+import Login from './components/AdminDashboard/Login'
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Home/>}></Route>
       <Route path='/signin' element={<Signin />}></Route>
+      <Route path='/admin/login' element={<Login />}></Route>
       <Route path='/signup' element={<Signup />}></Route>
       <Route path='/meetingroom' element={<ConferenceRoom />}></Route>
       <Route path='/chatroom' element={<ChatRoom />}></Route>

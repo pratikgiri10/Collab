@@ -2,6 +2,8 @@ import React from 'react'
 import Header from '../../components/Navbar/Header'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { FaRegCalendarPlus } from "react-icons/fa";
+import { FaRegPlusSquare } from "react-icons/fa";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -38,37 +40,33 @@ const Home = () => {
     }
     
   return (
-    <>
+    <div className='h-screen flex flex-col'>
     <Header />
-    <div className=' text-white m-4'>
-        <div className='bg-[#044c69] px-10 py-4  text-center'>
-            <h1 className='text-3xl'>Connect Seamlessly, Anywhere in the World</h1>
-        </div>
-        <div className='flex justify-between items-center gap-4 mt-8 w-full'>
-            <div className='flex flex-col gap-8 bg-white px-8 py-10 text-black h-[400px] w-1/2 rounded-3xl'>
-                <h1 className='text-4xl leading-snug'>Hey there, <br /><span>Schedule Your Meetings</span></h1>
-                <p className='w-[320px] text-lg'>Plan ahead, stay organized, and schedule meetings seamlessly with just a few clicks.</p>
+    <div className='bg-white text-black w-full overflow-y-hidden'>       
+        <div className='flex flex-col items-center gap-10 w-full py-10'>
+            <div className='flex flex-col items-center gap-2 text-center'>
+                <h1 className='text-4xl font-medium'>Connect Seamlessly, Anywhere in the World</h1>
+                <p className='text-lg w-[650px]'>Designed for reliability and ease of use, it connects teams effortlessly across the globe and adapts to meet the needs of any size group.</p>
+            </div>
+            <div className='flex items-center justify-center gap-4'>
                 <button
                 onClick={() => {
                     scheduleMeeting();
                 }}
-                className='text-xl bg-[#044c69] hover:bg-cyan-700 text-white px-8 py-2 w-1/2'>Schedule</button>
-            </div>
-            <div className='flex flex-col gap-8 items-end text-right bg-[#044c69] px-8 py-10 text-white h-[400px] w-1/2 rounded-3xl'>
-                <h1 className='text-4xl leading-snug'>Hey there,<br/><span>Join the Meeting</span></h1>
-                <p className='w-[320px] text-lg leading-normal'>Connect instantly, collaborate effortlessly, and join your meetings from anywhere in the world.</p>
+                className='flex items-center gap-4 text-xl bg-[#044c69] hover:bg-cyan-700 text-white px-8 py-2 w-[200px]'><FaRegCalendarPlus /> Schedule</button>
                 <button 
                  onClick={() => {
                     joinMeeting();
                 }}
-                className='text-xl bg-white hover:bg-gray-300 text-black px-8 py-2 w-1/2'>Join</button>
+                className='flex items-center gap-4 text-xl bg-white hover:bg-gray-300 text-black px-8 py-2 w-[200px]'><FaRegPlusSquare />Join</button>
+            </div>
+            <div className='flex justify-center object-cover w-1/2 mt-10'>
+                <img className='w-full' src="https://cdn.dribbble.com/users/5031392/screenshots/16363958/media/4515f2c0141e34521dd98a29b8f29960.png?resize=400x0" alt="" />
             </div>
         </div>
     </div>
-    {/* <div className='flex justify-center object-cover'>
-        <img src="https://cdn.dribbble.com/users/5031392/screenshots/16363958/media/4515f2c0141e34521dd98a29b8f29960.png?resize=400x0" alt="" />
-    </div> */}
-    </>
+    
+    </div>
   )
 }
 

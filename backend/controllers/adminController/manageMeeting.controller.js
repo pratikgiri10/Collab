@@ -22,3 +22,13 @@ export const deleteMeeting = async (req,res) => {
         res.send(err);
     }
 }
+export const deleteAllMeetings = async (req,res) => {
+    try{
+        const result = await Schedule.deleteMany({});
+        if(result){
+            res.send(result);
+        }
+    }catch(err){
+        res.send(err);
+    }
+}

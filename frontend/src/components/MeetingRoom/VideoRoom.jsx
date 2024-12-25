@@ -6,6 +6,7 @@ import { chatroom } from '../../services/MediaSoup/room';
 import { forwardRef } from 'react';
 import {NavigationType, useNavigate} from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 const AudioStream = ({mediaStream}) => {
      const remoteAudioRef = useRef(null);
@@ -195,7 +196,14 @@ const VideoRoom = () => {
     }, [])
 
 
-
+async function handleParticipant(){
+    const response = await axios.get('http://localhost:3000/api/rooms/participants',{
+        withCredentials: true
+    });
+    if(response){
+        console.lof('response: ',response)
+    }
+}
     
     // create send transport
     async function createSendTransport(){
@@ -471,8 +479,6 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
         </div>
         <div className='flex justify-between items-center mt-4 text-white'>
             <div className='flex gap-4'>
-                <button
-                 className='bg-[#044c69] px-4 py-2'>Start</button>
                 <button 
                 onClick={toggleAudio}
                 className='bg-[#044c69] px-4 py-2'>Audio</button>
@@ -484,7 +490,10 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
                 <button
                 onClick={shareScreen}
                 className='bg-[#044c69] px-4 py-2'>Share Screen</button>
-                {/* <button className='bg-[#044c69] px-4 py-2'>Chats</button> */}
+                 <button 
+                 onClick={handleParticipant}
+                 className='bg-[#044c69] px-4 py-2'>Participants</button>
+                <button className='bg-[#044c69] px-4 py-2'>Chats</button>
             </div>
             <div className='flex gap-4'>
                 <button 

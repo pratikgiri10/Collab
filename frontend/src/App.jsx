@@ -11,6 +11,7 @@ import Schedule from './components/Meeting/Schedule'
 import ScheduleDetails from './components/Meeting/ScheduleDetails'
 import { Route, Routes } from 'react-router-dom'
 import Login from './components/AdminDashboard/Login'
+import SearchBox from './components/Navbar/SearchBox'
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
       <Route path='/schedulemeeting' element={<Schedule />}></Route>
       <Route path='/meetingdetails' element={<ScheduleDetails />}></Route>
       <Route path='/joinmeeting' element={<JoinRoom />}></Route>
+      <Route path='/search' element={<SearchBox />}></Route>
     </Routes>
      
      

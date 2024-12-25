@@ -23,5 +23,6 @@ const meetingSchema = new mongoose.Schema({
     
   }, { timestamps: true });
   
-  const Room = mongoose.model('Room', roomSchema);
+const Room = mongoose.model('Room', meetingSchema);
+export default Room;
   

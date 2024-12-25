@@ -1,8 +1,7 @@
 import { nanoid} from 'nanoid';
 import crypto from 'crypto';
 import Schedule from '../models/schedule.model.js';
-
-const scheduleDetails = new Schedule();
+import User from '../models/user.model.js'
 export async function scheduleMeeting(req,res){
     const { title, desc, startTime, duration} = req.body;
     // Generate Meeting ID
@@ -12,11 +11,14 @@ export async function scheduleMeeting(req,res){
     const meetingPassword = crypto.randomBytes(4).toString('hex'); 
 
     console.log({ meetingID, meetingPassword });
+    const {_id } = await User.findOne({email: req.session.user.username});
+    console.log('id: ',_id);
     const scheduleDetails = new Schedule({
         title: title,
         description: desc,
         startTime: startTime,
         duration: duration,
+        host: _id,
         isHost: true,
         user: req.session.user.username,
         meetingId: meetingID,

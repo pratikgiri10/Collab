@@ -1,6 +1,7 @@
 import React from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
+import { HiHome } from "react-icons/hi2";
 const Header = () => {
   
   const navigate = useNavigate();
@@ -27,8 +28,8 @@ const handleNavigation = async () => {
             <div>
                 <h1 className='text-2xl '>Collab</h1>
             </div>
-            <div className='flex gap-10 text-xl'>
-               <Link to='/' className='hover:underline underline-offset-8'>Home</Link>
+            <div className='flex gap-10 text-xl font-medium'>
+               <Link to='/' className='flex gap-2 items-center hover:underline underline-offset-8'><HiHome />Home</Link>
                <h1 onClick={handleNavigation} className='hover: cursor-pointer hover:underline underline-offset-8'>Meetings</h1>
                
             </div>

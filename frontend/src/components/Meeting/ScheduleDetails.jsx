@@ -1,10 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import SearchBox from '../Navbar/SearchBox';
 const ScheduleDetails = () => {
   const [details, setDetails] = useState([]);
   const startRef = useRef({});
   const navigate = useNavigate();
+
+  const searchMeeting = (searchVal) => {
+    console.log('search meeting: ',details);
+    console.log('search val: ',searchVal);
+    if(details){
+      const result =  details.filter((data) => data.title == searchVal);
+      console.log("result: ",result);
+    }
+
+  }
+
    useEffect(() => {
     const meetingDetails = async () => {
         const response = await axios.get('http://localhost:3000/api/meeting/details',{
@@ -29,9 +41,7 @@ const ScheduleDetails = () => {
       navigate('/meetingroom',{state: {roomId: roomId}})
 
     }
-   }
-
-   
+   }  
 
    const deleteMeeting = async (id,e) => {
     console.log("id: ",id)
@@ -51,6 +61,7 @@ const ScheduleDetails = () => {
    }
   return (
     <div className='bg-white h-screen py-10 px-20 flex flex-col gap-6'>
+      <SearchBox searchMeeting={searchMeeting}/>
        {details.map((data,idx) => {
           return <div key={idx} className='flex flex-col gap-5 w-2/3'>
               <div className='flex items-center justify-between'>

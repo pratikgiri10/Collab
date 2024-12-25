@@ -1,5 +1,8 @@
 import { mediaCodecs } from "../config/mediaSoupConfig.js";
 import mediaSoup from 'mediasoup';
+import Room from '../models/meeting.model.js';
+import Schedule from '../models/schedule.model.js'
+
 let worker;
 let router1;
 async function createWorker(){
@@ -31,6 +34,13 @@ async function createRoom(roomId,socketId,rooms){
 
         console.log("creating new room: ",roomId);
         router1 = await worker.createRouter({mediaCodecs});
+        const { _id } = await Schedule.findOne({meetingId: roomId});
+        const newMeeting = new Room({
+            roomId,
+            host: _id,
+            role: 'host'
+        })
+        await newMeeting.save();
         // console.log(`Router: ${router1}`);
         // rtpCapabilities = router.rtpCapabilities;
         // console.log('rtpCapabilities:',router.rtpCapabilities);

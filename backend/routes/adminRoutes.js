@@ -1,7 +1,7 @@
 import express from 'express'
 import {Login, createInitialAdmin} from '../controllers/adminController/adminAuth.controller.js'
 import { viewUser, deleteUser } from '../controllers/adminController/manageUser.controller.js';
-import { viewScheduledMeetings, deleteMeeting } from '../controllers/adminController/manageMeeting.controller.js';
+import { viewScheduledMeetings, deleteMeeting, deleteAllMeetings } from '../controllers/adminController/manageMeeting.controller.js';
 const router = express.Router();
 
 router.post('/login', Login);
@@ -11,5 +11,6 @@ router.delete('/deleteuser', deleteUser);
 
 router.get('/scheduledmeetings', viewScheduledMeetings);
 router.delete('/deletemeeting', deleteMeeting);
+router.delete('/deleteallmeetings', deleteAllMeetings);
 
 export default router;

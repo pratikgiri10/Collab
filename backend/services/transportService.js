@@ -154,7 +154,7 @@ export async function initialize(io){
         socket.on('room',async (data,callback) => {
           
             const roomId = data.roomId;
-            const checkId = await Schedule.find({meetingId: roomId});
+            const checkId = await Schedule.findOne({meetingId: roomId});
             if(!checkId){
                 console.log('id not found');
                 return;

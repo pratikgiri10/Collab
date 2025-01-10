@@ -5,6 +5,6 @@ const router = express.Router();
 router.post('/create',createRoom);
 router.post('/join',joinRoom);
 router.post('/leave', leaveRoom);
-router.get('/participants', getParticipants);
+router.post('/participants', getParticipants);
 
 export default router;

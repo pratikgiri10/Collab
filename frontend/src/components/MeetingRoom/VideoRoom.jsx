@@ -197,11 +197,15 @@ const VideoRoom = () => {
 
 
 async function handleParticipant(){
-    const response = await axios.get('http://localhost:3000/api/rooms/participants',{
+    console.log("roomId: ",roomId);
+    const response = await axios.post('http://localhost:3000/api/rooms/participants', {
+    roomId
+    },{
+        
         withCredentials: true
     });
     if(response){
-        console.lof('response: ',response)
+        console.log('response: ',response)
     }
 }
     

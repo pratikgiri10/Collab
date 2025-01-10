@@ -8,6 +8,7 @@ export async function joinRoom(req,res){
     const {meetingId, password} = req.body;
     const meeting = await Schedule.findOne({meetingId, password});
     console.log(meeting);
+    
     if (meeting) {
      const { _id } = await User.findOne({email: req.session.user.username});
      console.log(_id)
@@ -21,8 +22,10 @@ export async function joinRoom(req,res){
 }
 
 export async function getParticipants(req,res){
-  const users = await Room.find({});
-  console.log('participants: ',users)
+  const {roomId}= req.body;
+  console.log(roomId);
+  const users = await Room.find({roomId: roomId}).populate('participants');
+  console.log('participants: ',users[0].participants)
 }
 export function leaveRoom(){
 

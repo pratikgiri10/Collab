@@ -7,6 +7,14 @@ import { forwardRef } from 'react';
 import {NavigationType, useNavigate} from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { AiTwotoneAudio } from "react-icons/ai";
+import { AiOutlineAudioMuted } from "react-icons/ai";
+import { FiVideo } from "react-icons/fi";
+import { FiVideoOff } from "react-icons/fi";
+import { IoPeopleSharp } from "react-icons/io5";
+import { LuScreenShare } from "react-icons/lu";
+import { IoChatbox } from "react-icons/io5";
+import { IoIosCloseCircle } from "react-icons/io";
 
 const AudioStream = ({mediaStream}) => {
      const remoteAudioRef = useRef(null);
@@ -45,12 +53,23 @@ const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
     />
   );
 })
-
-const VideoRoom = () => {
+// const ParticipantList = ({participants}) => {
+//     return <div className='bg-black text-white w-32 h-28 absolute bottom-20'>
+//         <div className='p-4'>           
+//                 <h1 className='text-xl'>{participants}</h1>         
+//         </div>
+//     </div>
+// }
+const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     const [remoteType, setRemoteType] = useState([]);
     const [producerTransport, setProducerTransport] = useState(null);
     const [remoteUserId, setRemoteUserId] = useState(null);
     const [pauseProducer, setPauseProducer] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isVideoOn, setIsVideoOn] = useState(true);
+    const [isAudioOn, setIsAudioOn] = useState(true);
+    // const [participants, setParticipants] = useState([]);
+    // const [isParticipantVisible, setIsParticipantVisible] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef({});
     const navigate = useNavigate();
@@ -80,7 +99,7 @@ const VideoRoom = () => {
     }
     const toggleVideo = () => {
         console.log('clicked')
-        
+        setIsVideoOn(!isVideoOn)
         // remoteVideoRef.current[socket.id].srcObject.getVideoTracks()[0].enabled = false;
 
         socket.emit('pauseProducer',socket.id, async ({value}) => {
@@ -106,7 +125,10 @@ const VideoRoom = () => {
         })
     }
     const toggleAudio = () => {
-
+        setIsAudioOn(!isAudioOn)
+    }
+    const toggleButtons = () => {
+        setIsOpen(!isOpen)
     }
 
     const displayMediaOptions = {
@@ -196,18 +218,30 @@ const VideoRoom = () => {
     }, [])
 
 
-async function handleParticipant(){
-    console.log("roomId: ",roomId);
-    const response = await axios.post('http://localhost:3000/api/rooms/participants', {
-    roomId
-    },{
+// async function handleParticipant(){
+//     console.log("roomId: ",roomId);
+//     const response = await axios.post('http://localhost:3000/api/rooms/participants', {
+//     roomId
+//     },{
         
-        withCredentials: true
-    });
-    if(response){
-        console.log('response: ',response)
-    }
-}
+//         withCredentials: true
+//     });
+//     if(response){
+//         setIsParticipantVisible(!isParticipantVisible);
+//         console.log('response: ',response.data);
+//         const users = response.data;
+//         users.forEach(user => {
+//             if(user.participants){
+//               user.participants.forEach(participant => {
+//                 setParticipants(participant.name);
+//                     console.log('name: ',participant.name);
+//                 }); 
+                
+//             }
+//         })
+        
+//     }
+// }
     
     // create send transport
     async function createSendTransport(){
@@ -454,12 +488,12 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
 }
 
   return (
-    <div className='h-screen p-8 w-2/3'>
-        <div className='bg-zinc-800 w-full h-[90%] flex flex-wrap gap-2 p-1 rounded-2xl'>
+    <div className='h-screen p-8 w-full'>
+        <div className='bg-zinc-800 w-full h-[90%] flex justify-center flex-wrap gap-2 p-1 rounded-2xl'>
             <video
             id='localVideo'
             ref={localVideoRef}
-            className='rounded-xl w-[200px] h-[150px]'
+            className='rounded-xl min-w-[200px] min-h-[150px] max-w-full max-h-full'
             autoPlay playsInline ></video>
             
                           
@@ -481,31 +515,69 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
             
             
         </div>
-        <div className='flex justify-between items-center mt-4 text-white'>
-            <div className='flex gap-4'>
+        
+        <div className='flex justify-between items-center mt-4 text-white text-sm md:text-md gap-2 md:gap-4'>
+            <div className='flex gap-1 md:gap-2'>
                 <button 
                 onClick={toggleAudio}
-                className='bg-[#044c69] px-4 py-2'>Audio</button>
+                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'>{isAudioOn? <AiTwotoneAudio size='20'/> : <AiOutlineAudioMuted size='20'/>}Audio</button>
                 <button 
                 onClick={toggleVideo}
-                className='bg-[#044c69] px-4 py-2'>Video</button>
+                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'>{isVideoOn?<FiVideo size='20'/> : <FiVideoOff size='20'/>}Video</button>
             </div>
-            <div className='flex gap-4'>
+            {/* for larger screens */}
+            <div className='hidden min-[990px]:flex justify-between items-center gap-1 md:gap-2'>
                 <button
                 onClick={shareScreen}
-                className='bg-[#044c69] px-4 py-2'>Share Screen</button>
-                 <button 
-                 onClick={handleParticipant}
-                 className='bg-[#044c69] px-4 py-2'>Participants</button>
-                <button className='bg-[#044c69] px-4 py-2'>Chats</button>
+                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'><LuScreenShare size='20'/>Share Screen</button>
+                <div >
+                   {/* {isParticipantVisible && <ParticipantList participants={participants}/>}  */}
+                    <button 
+                    onClick={() => {
+                        handleParticipant(roomId)
+                    }}
+                    className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'><IoPeopleSharp size='20'/>Participants</button>
+                    
+                </div>
+                <button 
+                onClick={toggleChat}
+                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'
+                ><IoChatbox size='20'/>Chats</button>
+                 
             </div>
-            <div className='flex gap-4'>
+            {/* for smaller screens */}
+            <div className='min-[990px]:hidden'>
+                <button 
+                onClick={toggleButtons}
+                className='bg-[#044c69] p-2 md:px-4 md:py-2'>More</button>
+                { isOpen && (
+                     <div className='absolute bottom-20 bg-zinc-900 p-2 w-36'>
+                     <button
+                     onClick={shareScreen}
+                     className='block p-2 md:px-4 md:py-2 hover:bg-[#044c69]'>Share Screen</button>
+                    
+                    <button 
+                    onClick={() => {
+                        handleParticipant(roomId)
+                    }}
+                    className='block p-2 md:px-4 md:py-2 hover:bg-[#044c69]'>Participants</button>
+                         
+                    
+                     <button 
+                     onClick={toggleChat}
+                     className='block p-2 md:px-4 md:py-2 hover:bg-[#044c69]'
+                     >Chats</button>
+                      
+                 </div>
+                )}
+            </div>
+            <div className='flex gap-1 md:gap-2'>
                 <button 
                 onClick={disconnectSocket}
-                className='bg-[#044c69] px-4 py-2'>Leave</button>
+                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'><IoIosCloseCircle size='20'/>Leave</button>
                 <button 
                 onClick={disconnectServerSocket}
-                className='bg-[#044c69] px-4 py-2'>End</button>
+                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'><IoIosCloseCircle size='20'/>End</button>
             </div>
         </div>
     </div>

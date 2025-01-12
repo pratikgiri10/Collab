@@ -45,7 +45,7 @@ app.use(session({
   }))
 app.use('/api/users',userRoutes);
 app.use('/api/admin',adminRoutes);
-app.use('/api/rooms', isAuthenticated, roomRoutes);
+app.use('/api/rooms',roomRoutes);
 app.use('/api/session',sessionRoutes);
 app.use('/api/meeting',isAuthenticated, scheduleRoutes);
 

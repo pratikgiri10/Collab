@@ -40,25 +40,25 @@ const Home = () => {
     }
     
   return (
-    <div className='h-screen flex flex-col'>
+    <div className='h-screen w-full flex flex-col'>
     <Header />
     <div className='bg-white text-black w-full overflow-y-hidden'>       
         <div className='flex flex-col items-center gap-10 w-full py-10'>
             <div className='flex flex-col items-center gap-2 text-center'>
-                <h1 className='text-4xl font-medium'>Connect Seamlessly, Anywhere in the World</h1>
-                <p className='text-lg w-[650px]'>Designed for reliability and ease of use, it connects teams effortlessly across the globe and adapts to meet the needs of any size group.</p>
+                <h1 className='text-3xl md:text-4xl font-medium'>Connect Seamlessly, Anywhere in the World</h1>
+                <p className='text-md sm:w-[550px]  md:text-lg md:w-[650px]'>Designed for reliability and ease of use, it connects teams effortlessly across the globe and adapts to meet the needs of any size group.</p>
             </div>
-            <div className='flex items-center justify-center gap-4'>
+            <div className='flex items-center justify-center gap-4 text-lg sm:text-xl'>
                 <button
                 onClick={() => {
                     scheduleMeeting();
                 }}
-                className='flex items-center gap-4 text-xl bg-[#044c69] hover:bg-cyan-700 text-white px-8 py-2 w-[200px]'><FaRegCalendarPlus /> Schedule</button>
+                className='flex items-center gap-4 bg-[#044c69] hover:bg-cyan-700 text-white px-8 py-2 sm:w-[200px]'><FaRegCalendarPlus /> Schedule</button>
                 <button 
                  onClick={() => {
                     joinMeeting();
                 }}
-                className='flex items-center gap-4 text-xl bg-white hover:bg-gray-300 text-black px-8 py-2 w-[200px]'><FaRegPlusSquare />Join</button>
+                className='flex items-center gap-4  bg-white hover:bg-gray-300 text-black px-8 py-2  sm:w-[200px]'><FaRegPlusSquare />Join</button>
             </div>
             <div className='flex justify-center object-cover w-1/2 mt-10'>
                 <img className='w-full' src="https://cdn.dribbble.com/users/5031392/screenshots/16363958/media/4515f2c0141e34521dd98a29b8f29960.png?resize=400x0" alt="" />

@@ -4,18 +4,28 @@ import { useNavigate } from 'react-router-dom';
 import SearchBox from '../Navbar/SearchBox';
 const ScheduleDetails = () => {
   const [details, setDetails] = useState([]);
+  const [resData, setResData] = useState([]);
   const startRef = useRef({});
   const navigate = useNavigate();
 
-  const searchMeeting = (searchVal) => {
-    console.log('search meeting: ',details);
-    console.log('search val: ',searchVal);
-    if(details){
-      const result =  details.filter((data) => data.title == searchVal);
-      console.log("result: ",result);
+ 
+    const searchMeeting = (searchVal) => {
+      console.log('search meeting: ',details);
+      console.log('search val: ',searchVal);
+      if(searchVal == ""){
+        setDetails(resData);
+        return;
+      }
+        const result =  resData.filter((data) => data.title == searchVal);
+        console.log("result: ",result);
+        if(result){
+          setDetails(result);
+        }
+        
+        
+      
+  
     }
-
-  }
 
    useEffect(() => {
     const meetingDetails = async () => {
@@ -24,7 +34,8 @@ const ScheduleDetails = () => {
         })
         if(response){
             console.log('response: ',response.data);
-            setDetails(response.data)
+            setDetails(response.data);
+            setResData(response.data);
         }
     }
     meetingDetails();

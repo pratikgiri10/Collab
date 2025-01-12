@@ -92,3 +92,15 @@ export async function checkSession(req,res){
     }
         
 }
+export async function destroySession(req,res){
+    if(req.session){
+        req.session.destroy((err) => {
+            res.redirect('/') // will always fire after session is destroyed
+          })
+        // res.send({success: true})
+    }
+    else{
+        res.send({msg: 'you have not legged in'})
+    }
+    
+}

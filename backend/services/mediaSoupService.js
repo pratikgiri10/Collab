@@ -35,12 +35,16 @@ async function createRoom(roomId,socketId,rooms){
         console.log("creating new room: ",roomId);
         router1 = await worker.createRouter({mediaCodecs});
         const { _id } = await Schedule.findOne({meetingId: roomId});
-        const newMeeting = new Room({
-            roomId,
-            host: _id,
-            role: 'host'
-        })
-        await newMeeting.save();
+        const checkRoom = await Room.findOne({roomId: roomId});
+        if(!checkRoom){
+            const newMeeting = new Room({
+                roomId,
+                host: _id,
+                role: 'host'
+            })
+            await newMeeting.save();
+        }
+        
         // console.log(`Router: ${router1}`);
         // rtpCapabilities = router.rtpCapabilities;
         // console.log('rtpCapabilities:',router.rtpCapabilities);

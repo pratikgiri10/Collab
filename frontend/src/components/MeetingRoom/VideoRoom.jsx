@@ -16,26 +16,28 @@ import { LuScreenShare } from "react-icons/lu";
 import { IoChatbox } from "react-icons/io5";
 import { IoIosCloseCircle } from "react-icons/io";
 
-const AudioStream = ({mediaStream}) => {
-     const remoteAudioRef = useRef(null);
-
+const AudioStream = forwardRef(function AudioStream(props, remoteAudioRef){
+    //  const remoteAudioRef = useRef(null);
+    console.log('props id: ',props.id)
   useEffect(() => {
-    if (remoteAudioRef.current && mediaStream) {
-      remoteAudioRef.current.srcObject = mediaStream;
+    if (remoteAudioRef.current[props.id] && props.mediaStream) {
+      remoteAudioRef.current[props.id].srcObject = props.mediaStream;
     }
-  }, [mediaStream]);
+  }, [props.mediaStream]);
 
   return (
     <audio
-      ref={remoteAudioRef}
+      ref={(el) => (remoteAudioRef.current[props.id] = el)}
+      defaultValue={props.type}
       autoPlay
     />
   );
-}
+})
 
 const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
-    // const remoteVideoRef = useRef({});
+    
     console.log('props id: ',props.id)
+   
   useEffect(() => {
     if (remoteVideoRef.current[props.id] && props.mediaStream) {
       remoteVideoRef.current[props.id].srcObject = props.mediaStream;
@@ -49,35 +51,32 @@ const VideoStream = forwardRef(function VideoStream (props,remoteVideoRef) {
     autoPlay
     playsInline
     muted={false} // Change to true if you want the video to be muted
-    className="rounded-xl w-[200px] h-[150px]"
+    className="rounded-xl min-w-[200px] max-w-full"
     />
   );
 })
-// const ParticipantList = ({participants}) => {
-//     return <div className='bg-black text-white w-32 h-28 absolute bottom-20'>
-//         <div className='p-4'>           
-//                 <h1 className='text-xl'>{participants}</h1>         
-//         </div>
-//     </div>
-// }
+
 const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     const [remoteType, setRemoteType] = useState([]);
     const [producerTransport, setProducerTransport] = useState(null);
     const [remoteUserId, setRemoteUserId] = useState(null);
     const [pauseProducer, setPauseProducer] = useState(null);
+    const [audioProducerPause, setAudioProducerPause] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [isVideoOn, setIsVideoOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
-    // const [participants, setParticipants] = useState([]);
-    // const [isParticipantVisible, setIsParticipantVisible] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef({});
+    const remoteAudioRef = useRef({})
+    const localAudioRef = useRef(null)
     const navigate = useNavigate();
     const location = useLocation();
+
     const addRemoteType = ({stream,type,id}) => {
         console.log('stream add: ',stream)
         console.log('type: ',type)        
-        setRemoteType((prev) => [...prev, {stream,type,id}])        
+        setRemoteType((prev) => [...prev, {stream,type,id}]) 
+            
     }
 
     const leaveMeeting = (remoteUser) => {
@@ -87,22 +86,25 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
             
         }
     }
+
     const disconnectSocket = () => {
         socket.disconnect();
         navigate('/');
         window.location.reload();
     }
+
     const disconnectServerSocket = () => {
         navigate('/');
         window.location.reload();
         socket.emit('endMeeting',roomId);
     }
+
     const toggleVideo = () => {
         console.log('clicked')
         setIsVideoOn(!isVideoOn)
         // remoteVideoRef.current[socket.id].srcObject.getVideoTracks()[0].enabled = false;
 
-        socket.emit('pauseProducer',socket.id, async ({value}) => {
+        socket.emit('pauseVideoProducer',socket.id, async ({value}) => {
             if(value){
                 if(pauseProducer.paused){
                   
@@ -124,9 +126,33 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
             
         })
     }
+
     const toggleAudio = () => {
         setIsAudioOn(!isAudioOn)
+        // remoteAudioRef.current.srcObject.getAudioTracks()[0].enabled = false;
+        socket.emit('pauseAudioProducer',socket.id, async ({value}) => {
+            if(value){
+                if(audioProducerPause.paused){
+                  
+                    // localAudioRef.current.srcObject.getAudioTracks()[0].enabled = true;
+                    audioProducerPause.resume();
+                   
+                   
+                    console.log('audio resumed')
+                }
+                else{
+                    // localAudioRef.current.srcObject.getAudioTracks().forEach((track) => {
+                    //     track.enabled = false;
+                    // })
+                    audioProducerPause.pause();
+                    console.log('audio paused');
+                }
+                
+            }
+            
+        })
     }
+
     const toggleButtons = () => {
         setIsOpen(!isOpen)
     }
@@ -143,7 +169,7 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
         systemAudio: "include",
         surfaceSwitching: "include",
         monitorTypeSurfaces: "include",
-      };
+    };
 
 
     let rtpCapabilities;
@@ -153,7 +179,7 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     let videoProducer;
     let audioProducer;
     let screenProducer;
-      let stream;
+    let stream;
     let consumer;
     let consumerTransports = [];
     let videostream;
@@ -161,10 +187,10 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     const roomId = location.state.roomId;
     const userName = 'Pratik'
     console.log('roomid: ',roomId);
-
+  
     useEffect(() => {
-     console.log('remote type: ',remoteType)
-    }, [remoteType])
+       console.log('remotetype: ',remoteType)
+    }, [remoteType]);
     
 
     useEffect(() => {
@@ -336,6 +362,7 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
             setPauseProducer(videoProducer);
             audioProducer = await sendTransport.produce({track: audioTrack});
             
+            setAudioProducerPause(audioProducer);
             console.log("produced media")
             
         } catch(err){
@@ -489,16 +516,17 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
 
   return (
     <div className='h-screen p-8 w-full'>
-        <div className='bg-zinc-800 w-full h-[90%] flex justify-center flex-wrap gap-2 p-1 rounded-2xl'>
+        <div className='bg-zinc-800 w-full h-[90%] flex justify-center items-center gap-2 p-1 rounded-2xl'>
             <video
             id='localVideo'
             ref={localVideoRef}
-            className='rounded-xl min-w-[200px] min-h-[150px] max-w-full max-h-full'
+            className='rounded-xl min-w-[200px] max-w-full'
             autoPlay playsInline ></video>
             
                           
             {remoteType.filter((elem) => elem.type == 'video').map(({stream,type,id}) => {
-                return <VideoStream key={stream.id} mediaStream={stream} type={type} id={id} ref={remoteVideoRef}/>                
+            
+                return <VideoStream key={stream.id}  mediaStream={stream} type={type} id={id} ref={remoteVideoRef}/>                
             })}
            
             {/* <div>                   
@@ -507,12 +535,10 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
             })}
             </div>  */}
            
-            {remoteType.filter((elem) => elem.type == 'audio').map(({stream}) => {
-               return <AudioStream key={stream.id} mediaStream={stream} />        
+            {remoteType.filter((elem) => elem.type == 'audio').map(({stream, type, id}) => {
+               return <AudioStream key={stream.id} mediaStream={stream} type={type} id={id} ref={remoteAudioRef}/>        
             
-            })}
-            
-            
+            })}          
             
         </div>
         

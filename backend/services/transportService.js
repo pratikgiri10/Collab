@@ -78,11 +78,21 @@ export async function initialize(io){
             console.log('meeting ended');
             
         })
-        socket.on('pauseProducer', async (userId,callback) => {
+        socket.on('pauseVideoProducer', async (userId,callback) => {
             const [pauseProducer] = producers.filter((data) => data.socketId == userId && data.kind == 'video');
             
             if(pauseProducer){
-                console.log('pause producer: ',pauseProducer.producer)
+                console.log('pause video producer: ',pauseProducer.producer)
+                // pauseProducer.producer.pause();
+            }
+            
+            callback({value: true});
+        })
+        socket.on('pauseAudioProducer', async (userId,callback) => {
+            const [audioProducer] = producers.filter((data) => data.socketId == userId && data.kind == 'audio');
+            
+            if(audioProducer){
+                console.log('pause audio producer: ',audioProducer.producer)
                 // pauseProducer.producer.pause();
             }
             

@@ -11,6 +11,16 @@ export const viewUser = async (req,res) => {
     }
     
 }
+export const editUser = async (req,res) => {
+    const { id } = req.params;
+    const {name, email} = req.body;
+    try{
+        const result = await User.findByIdAndUpdate(id, {name, email}, {new: true});
+        res.send({success: true});
+    }catch(e){
+        res.send(e);
+    }
+}
 export const deleteUser = async (req,res) => {
     const { id } = req.body;
     try{

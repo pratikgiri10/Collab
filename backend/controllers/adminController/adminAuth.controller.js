@@ -26,12 +26,14 @@ export const createInitialAdmin = async (req,res) => {
     }
 }
 export const Login = async (req,res) => {
+    console.log('login')
     const {email,password} = req.body;
     if(!email || !password){
         return res.status(400).json({ error: 'Please fill all the fields' });
     }
     const user = await User.findOne({email: email});
     if(user){
+        console.log('user: ',user)
         const hash = user.password;
         bcrypt.compare(password,hash, function (err,result){
             if(result){
@@ -52,4 +54,30 @@ export const Login = async (req,res) => {
     }
     
          
+}
+export async function checkSession(req,res){
+    if(req.session.user){
+        console.log('session found');
+        res.send({name: req.session.user, loggedIn: true})
+       
+    }        
+    else{
+        console.log('session not found');
+        res.send({loggedIn: false, user: req.session.user});
+       
+    }
+        
+}
+export async function destroySession(req,res){
+    console.log('destroy')
+    if(req.session){
+        req.session.destroy((err) => {
+            res.redirect('/') // will always fire after session is destroyed
+          })
+        // res.send({success: true})
+    }
+    else{
+        res.send({msg: 'you have not legged in'})
+    }
+    
 }

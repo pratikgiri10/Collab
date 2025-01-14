@@ -10,8 +10,14 @@ import JoinRoom from './components/Meeting/JoinRoom'
 import Schedule from './components/Meeting/Schedule'
 import ScheduleDetails from './components/Meeting/ScheduleDetails'
 import { Route, Routes } from 'react-router-dom'
-import Login from './components/AdminDashboard/Login'
+import AdminLogin from './components/AdminDashboard/AdminLogin'
 import SearchBox from './components/Navbar/SearchBox'
+import Sidebar from './components/AdminDashboard/Sidebar'
+import UserManagement from './components/AdminDashboard/UserManagement'
+import MeetingManagement from './components/AdminDashboard/MeetingManagement'
+import Settings from './components/AdminDashboard/Settings'
+import Dashboard from './components/AdminDashboard/Dashboard'
+import RoomManagement from './components/AdminDashboard/RoomManagement'
 
 
 function App() {
@@ -20,8 +26,14 @@ function App() {
     <>
     <Routes>
       <Route path='/' element={<Home/>}></Route>
-      <Route path='/signin' element={<Signin />}></Route>
-      <Route path='/admin/login' element={<Login />}></Route>
+      <Route path='/signin' element={<Signin />}></Route>      
+      <Route path='/admin/login' element={<AdminLogin />}></Route>
+      <Route path='/admin/sidebar' element={<Sidebar />}></Route>
+      <Route path='/admin/users' element={<UserManagement />}></Route>
+      <Route path='/admin/meetings' element={<MeetingManagement />}></Route>
+      <Route path='/admin/settings' element={<Settings />}></Route>
+      <Route path='/admin/dashboard' element={<Dashboard />}></Route>
+      <Route path='/admin/rooms' element={<RoomManagement />}></Route>
       <Route path='/signup' element={<Signup />}></Route>
       <Route path='/meetingroom' element={<ConferenceRoom />}></Route>
       <Route path='/chatroom' element={<ChatRoom />}></Route>

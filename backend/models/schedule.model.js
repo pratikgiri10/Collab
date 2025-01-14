@@ -27,7 +27,8 @@ const scheduleSchema = new mongoose.Schema({
         },
     ],
     isHost: {
-        type: Boolean
+        type: Boolean,
+        default: true
     },
     user: {
         type: String

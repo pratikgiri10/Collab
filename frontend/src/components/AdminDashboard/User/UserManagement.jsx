@@ -1,29 +1,36 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "../Sidebar";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   // Sample user data
   useEffect(() => {
     const getUsers = async () => {
-      const response = await axios.get('http://localhost:3000/api/admin/getUsers');
-
-      if(response.data){
-        console.log(response.data);
-        setUsers(response.data)
+      const response = await axios.get('http://localhost:3000/api/admin/session/check',{
+          withCredentials: true
+      })
+      if(!response.data.loggedIn){
+        console.log(response);
+        navigate('/admin/login')
       }
-    }
+      else{
+        const response = await axios.get('http://localhost:3000/api/admin/getUsers');
+
+        if(response.data){
+          console.log(response.data);
+          setUsers(response.data)
+        }
+      }
+     
+     
+  }
+   
     getUsers()
   }, [])
   
-  // const [users, setUsers] = useState([
-  //   { id: 1, name: "Alice Johnson", email: "alice@example.com", role: "Admin" },
-  //   { id: 2, name: "Bob Smith", email: "bob@example.com", role: "User" },
-  //   { id: 3, name: "Charlie Brown", email: "charlie@example.com", role: "Moderator" },
-  // ]);
-
   const [searchTerm, setSearchTerm] = useState("");
-
+  const navigate = useNavigate();
   // Filtered users based on search term
   const filteredUsers = users.filter(
     (user) =>
@@ -31,22 +38,42 @@ const UserManagement = () => {
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const addUser = () => {
+    navigate('/admin/userForm');
+  }
+  const editUser = (user) => {
+    if(id){
+      navigate('/userform', {state: {user}})
+    }
+  }
+  const deleteUser = async (id,e) => {
+    const response = await axios.delete('http://localhost:3000/api/admin/deleteuser',{
+      data: {id},
+      withCredentials: true
+    })
+    if(response.data.isDeleted){
+      console.log(response.data)
+      e.target.parentNode.parentNode.remove();
+    }
+  }
   return (
-   <div className="bg-white flex">
+   <div className="bg-white flex w-full">
       <Sidebar />
-      <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">User Management</h1>
+      <div className="p-6 w-[80%]">
+      <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-6">User Management</h1>
 
       {/* Search Bar and Add User Button */}
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
           placeholder="Search users..."
-          className="border border-gray-300 rounded-lg px-4 py-2 w-1/2"
+          className="border border-[#044c69] rounded-lg px-4 py-2 w-1/2"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+        <button 
+        onClick={addUser}
+        className="bg-[#044c69] text-white px-4 py-2 rounded-lg hover:bg-[#1a90be]">
           Add User
         </button>
       </div>
@@ -54,7 +81,7 @@ const UserManagement = () => {
       {/* User Table */}
       <div className="overflow-x-auto bg-white rounded-lg shadow-md">
         <table className="table-auto w-full text-left">
-          <thead className="bg-gray-200">
+          <thead className="bg-[#044c69] text-white">
             <tr>
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
@@ -71,8 +98,16 @@ const UserManagement = () => {
                 <td className="px-4 py-2">{user.email}</td>
                 <td className="px-4 py-2">{user.role}</td>
                 <td className="px-4 py-2 flex gap-2">
-                  <button className="text-blue-600 hover:underline">Edit</button>
-                  <button className="text-red-600 hover:underline">Delete</button>
+                  <button 
+                  onClick={() => {
+                    editUser(user)
+                  }}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Edit</button>
+                  <button 
+                  onClick={(e) => {
+                    deleteUser(user._id,e)
+                  }}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">Delete</button>
                 </td>
               </tr>
             ))}

@@ -37,10 +37,10 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-white flex">
+    <div className="bg-white flex w-full ">
         <Sidebar />
-        <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Settings</h1>
+        <div className="p-6 w-[80%]">
+        <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-6">Settings</h1>
 
       {/* General Settings */}
       <div className="mb-6">

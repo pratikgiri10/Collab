@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaUsers, FaChartBar, FaCalendarAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { SiGoogleclassroom } from "react-icons/si";
 import axios from 'axios'
+import logo from '../../assets/colab3.png'
 const Sidebar = () => {
   const navigate = useNavigate()
+
+ 
   const handleLogOut = async () => {
     const response = await axios.get('http://localhost:3000/api/admin/session/destroy');
     if(response){
@@ -12,10 +15,11 @@ const Sidebar = () => {
     }
   }
   return (
-    <div className="w-64 h-screen bg-[#044c69] text-white flex flex-col">
+    <div className="w-64 h-screen bg-[#033750] text-white flex flex-col">
       {/* Header */}
-      <div className="py-4 px-6 text-center border-b border-gray-700">
-        <h1 className="text-2xl font-bold">Collab Admin</h1>
+      <div className=" bg-white px-6 py-3 text-center">
+        <img className="h-14 w-auto " src={logo} alt="" />
+        {/* <h1 className="text-2xl font-bold">Collab Admin</h1> */}
       </div>
 
       {/* Navigation Links */}
@@ -46,13 +50,13 @@ const Sidebar = () => {
 >         <SiGoogleclassroom  className="mr-3 text-xl" />
           Rooms Management
           </Link>
-          <Link
+          {/* <Link
           to="../../admin/settings"
           className='flex items-center px-6 py-3 text-white hover:bg-white hover:text-black'
 >
           <FaCog className="mr-3 text-xl" />
           Settings
-          </Link>     
+          </Link>      */}
 
         {/* <Link
           to="/help"

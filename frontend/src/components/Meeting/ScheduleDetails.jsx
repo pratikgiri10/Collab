@@ -1,31 +1,48 @@
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SearchBox from '../Navbar/SearchBox';
+import logo from '../../assets/colab3.png'
 const ScheduleDetails = () => {
   const [details, setDetails] = useState([]);
   const [resData, setResData] = useState([]);
+  const [searchVal, setSearchVal] = useState("");
   const startRef = useRef({});
   const navigate = useNavigate();
-
- 
-    const searchMeeting = (searchVal) => {
-      console.log('search meeting: ',details);
-      console.log('search val: ',searchVal);
-      if(searchVal == ""){
-        setDetails(resData);
-        return;
-      }
-        const result =  resData.filter((data) => data.title == searchVal);
-        console.log("result: ",result);
-        if(result){
-          setDetails(result);
-        }
+  const handleNavigation = async () => {
+    const res = await checkSession();
+    
+    if(res){
+     
+      navigate('/meetingdetails')
+    }
+    else{
+      
+      navigate('/signin');
+    }
+  }
+  const filteredMeetings = details.filter(
+    (detail) =>
+      detail.title.toLowerCase().includes(searchVal.toLowerCase()) 
+  );
+    // const searchMeeting = (searchVal) => {
+    //   console.log('search meeting: ',details);
+    //   console.log('search val: ',searchVal);
+    //   if(searchVal == ""){
+    //     setDetails(resData);
+    //     return;
+    //   }
+    //     const result =  resData.filter((data) => data.title == searchVal);
+    //     console.log("result: ",result);
+    //     if(result){
+    //       setDetails(result);
+    //     }
         
         
       
   
-    }
+    // }
 
    useEffect(() => {
     const meetingDetails = async () => {
@@ -71,10 +88,28 @@ const ScheduleDetails = () => {
    
    }
   return (
-    <div className='bg-white h-screen py-10 px-20 flex flex-col gap-6'>
-      <SearchBox searchMeeting={searchMeeting}/>
-       {details.map((data,idx) => {
-          return <div key={idx} className='flex flex-col gap-5 w-2/3'>
+    <div className='bg-white h-screen flex flex-col gap-6'>
+       <nav className='flex justify-between items-center px-6 py-2 text-black'>
+            <div className='flex items-center'>
+              <img className='h-20 w-auto' src={logo} alt="" />
+            </div>
+            <div className='hidden sm:flex gap-10 text-xl font-medium'>
+               <Link to='/' className='flex gap-2 items-center hover:underline underline-offset-8'>Home</Link>
+               <h1 onClick={handleNavigation} className='hover: cursor-pointer hover:underline underline-offset-8'>Meetings</h1>
+               
+            </div>
+            <div className='flex justify items-center text-black' >
+            <SearchBox searchVal={searchVal} setSearchVal={setSearchVal}/>               
+            </div>
+            {/* <div 
+            onClick={toggleMenu}
+            className='flex sm:hidden'>
+              <FiMenu size='25'/>
+            </div> */}
+        </nav>
+      
+       {filteredMeetings.map((data,idx) => {
+          return <div key={idx} className='flex flex-col px-10 py-6 gap-5 w-2/3'>
               <div className='flex items-center justify-between'>
                 <h1 className='text-xl font-medium'>Title:</h1>
                 <p className='text-xl'>{data.title}</p>
@@ -116,6 +151,12 @@ const ScheduleDetails = () => {
               </div>
         </div>
         })}
+         {filteredMeetings.length === 0 && (
+             <div className='flex justify-center items-center'>
+              <h1 className='text-3xl'> No users found.</h1>
+             </div>
+               
+            )}
       
     </div>
   )

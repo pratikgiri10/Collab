@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import { FiMenu } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
-
+import logo from '../../assets/colab3.png'
 const Sidebar = ({toggleMenu, handleNavigation}) => {
   return  <div className="absolute top-0 right-0 bg-[#044c69] w-1/3 sm:hidden" >
   <nav className='flex flex-col justify-end items-center gap-4 px-14 py-5 text-white'>
@@ -94,16 +94,16 @@ const toggleMenu = () => {
   return (
     <div className='w-full  bg-white'>
       {/* for larger screens */}
-        <nav className='flex justify-between items-center px-4 py-5 text-black'>
-            <div>
-                <h1 className='text-2xl '>Collab</h1>
+        <nav className='flex justify-between items-center px-6 py-2 text-black'>
+            <div className='flex items-center'>
+              <img className='h-20 w-auto' src={logo} alt="" />
             </div>
             <div className='hidden sm:flex gap-10 text-xl font-medium'>
                <Link to='/' className='flex gap-2 items-center hover:underline underline-offset-8'>Home</Link>
                <h1 onClick={handleNavigation} className='hover: cursor-pointer hover:underline underline-offset-8'>Meetings</h1>
                
             </div>
-            <div className='hidden sm:flex gap-2 text-white' >
+            <div className='hidden sm:flex text-white' >
               {status ? (
                  <button 
                  onClick={() => {
@@ -119,11 +119,6 @@ const toggleMenu = () => {
                 className='text-xl bg-[#044c69] px-6 py-2 hover:cursor-pointer hover:bg-cyan-700 '>Sign In</button>
               )}
                
-                {/* <button 
-                onClick={() => {
-                handleSignInOut()
-                }}
-                className='text-xl bg-[#044c69] px-6 py-2 hover:cursor-pointer hover:bg-cyan-700 '>Sign Out</button> */}
             </div>
             <div 
             onClick={toggleMenu}

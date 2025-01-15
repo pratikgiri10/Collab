@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { FaRegCalendarPlus } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
+import bgImg from "../../assets/bgImg3.jpg"
 
 const Home = () => {
     const navigate = useNavigate();
@@ -60,8 +61,9 @@ const Home = () => {
                 }}
                 className='flex items-center gap-4  bg-white hover:bg-gray-300 text-black px-8 py-2  sm:w-[200px]'><FaRegPlusSquare />Join</button>
             </div>
-            <div className='flex justify-center object-cover w-1/2 mt-10'>
-                <img className='w-full' src="https://cdn.dribbble.com/users/5031392/screenshots/16363958/media/4515f2c0141e34521dd98a29b8f29960.png?resize=400x0" alt="" />
+            <div className='flex justify-center object-cover w-1/2'>
+            {/* "https://cdn.dribbble.com/users/5031392/screenshots/16363958/media/4515f2c0141e34521dd98a29b8f29960.png?resize=400x0" */}
+                <img className='w-full' src={bgImg} alt="" />
             </div>
         </div>
     </div>

@@ -13,11 +13,13 @@ import { Route, Routes } from 'react-router-dom'
 import AdminLogin from './components/AdminDashboard/AdminLogin'
 import SearchBox from './components/Navbar/SearchBox'
 import Sidebar from './components/AdminDashboard/Sidebar'
-import UserManagement from './components/AdminDashboard/UserManagement'
-import MeetingManagement from './components/AdminDashboard/MeetingManagement'
+import UserManagement from './components/AdminDashboard/User/UserManagement'
+import MeetingManagement from './components/AdminDashboard/Meeting/MeetingManagement'
 import Settings from './components/AdminDashboard/Settings'
 import Dashboard from './components/AdminDashboard/Dashboard'
-import RoomManagement from './components/AdminDashboard/RoomManagement'
+import RoomManagement from './components/AdminDashboard/Room/RoomManagement'
+import UserForm from './components/AdminDashboard/User/UserForm'
+import MeetingForm from './components/AdminDashboard/Meeting/MeetingForm'
 
 
 function App() {
@@ -30,7 +32,9 @@ function App() {
       <Route path='/admin/login' element={<AdminLogin />}></Route>
       <Route path='/admin/sidebar' element={<Sidebar />}></Route>
       <Route path='/admin/users' element={<UserManagement />}></Route>
+      <Route path='/admin/userForm' element={<UserForm />}></Route>
       <Route path='/admin/meetings' element={<MeetingManagement />}></Route>
+      <Route path='/admin/meetingForm' element={<MeetingForm />}></Route>
       <Route path='/admin/settings' element={<Settings />}></Route>
       <Route path='/admin/dashboard' element={<Dashboard />}></Route>
       <Route path='/admin/rooms' element={<RoomManagement />}></Route>

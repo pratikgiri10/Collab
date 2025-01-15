@@ -1,31 +1,49 @@
-import React, { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
+import React, { useEffect, useState } from "react"
+import Sidebar from "../Sidebar"
 import axios from 'axios'
+import {useNavigate } from "react-router-dom";
 const RoomManagement = () => {
+  const navigate = useNavigate()
   const [rooms, setRooms] = useState([])
   useEffect(() => {
     const getRooms = async () => {
+      const response = await axios.get('http://localhost:3000/api/admin/session/check',{
+        withCredentials: true
+    })
+    if(!response.data.loggedIn){
+      console.log(response);
+      navigate('/admin/login')
+    }
+    else{
       const response  = await axios.get('http://localhost:3000/api/admin/roomDetail');
       if(response.data){
         console.log(response.data)
         setRooms(response.data);
       }
     }
+    }
     getRooms();
   }, [])
 
   // Function to delete a meeting
-  const deleteRoom = (id) => {
-    const updatedMeetings = meetings.filter((meeting) => meeting.id !== id);
-    setRooms(updatedMeetings);
-    alert("Meeting deleted successfully!");
+  const deleteRoom = async (rooms,id) => {
+    const response = await axios.delete('http://localhost:3000/api/admin/deleteRoom',{
+      data: {id},
+      withCredentials: true
+    })
+    if(response.data.isDeleted){
+      const updatedMeetings = rooms.filter((room) => room._id !== id);
+      setRooms(updatedMeetings);
+      alert("Meeting deleted successfully!");
+    }
+    
   };
 
   return (
     <div className=" bg-white flex w-full">
         <Sidebar />
         <div className="p-6 w-[80%]">
-      <h1 className="text-2xl font-bold mb-6">Room Management</h1>
+        <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-6">Room Management</h1>
 
       {/* Meetings Table */}
       <div className="overflow-x-auto bg-white rounded-lg shadow-md w-full">
@@ -34,6 +52,7 @@ const RoomManagement = () => {
             <tr>
               {/* <th className="px-4 py-2">ID</th> */}
               <th className="px-4 py-2">Room Id</th>
+              <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2">Host</th>
               <th className="px-4 py-2">Participants</th>
               <th className="px-4 py-2">Actions</th>
@@ -41,17 +60,19 @@ const RoomManagement = () => {
           </thead>
           <tbody>
             {rooms.map((room) => (
-              <tr key={room._id} className="hover:bg-gray-100">
+              <tr key={room._id} className="hover:bg-zinc-300">
                 {/* <td className="px-4 py-2">{room._id}</td> */}
                 <td className="px-4 py-2">{room.roomId}</td>
-                <td className="px-4 py-2">{room.host}</td>
+                <td className="px-4 py-2">{new Date(room.updatedAt).toLocaleString()}</td>
+                <td className="px-4 py-2">{room.host.host.name}</td>
+       
                {room.participants.map((user) => {
                 {console.log(user.name)}
-                   return <td className="px-4 py-2 flex flex-col">{user.name}</td>
+                   return <td key={user._id} className="px-4 py-2 flex flex-col">{user.name}</td>
                 })}
                 <td className="px-4 py-2">
                   <button
-                    onClick={() => deleteRoom(room._id)}
+                    onClick={() => deleteRoom(room,room._id)}
                     className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
                   >
                     Delete

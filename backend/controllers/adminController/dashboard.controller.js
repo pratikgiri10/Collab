@@ -12,7 +12,7 @@ export const getTotalUsers = async (req,res) => {
         res.send({error: `failed to get data: ${err}`});
     }
 }
-export const getTotalRooms = async (req,res) => {
+export const getTotalMeetings = async (req,res) => {
     try{
         const rooms = await Schedule.find({});
         if(rooms){

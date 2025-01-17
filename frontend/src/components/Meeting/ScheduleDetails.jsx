@@ -153,7 +153,7 @@ const ScheduleDetails = () => {
         })}
          {filteredMeetings.length === 0 && (
              <div className='flex justify-center items-center'>
-              <h1 className='text-3xl'> No users found.</h1>
+              <h1 className='text-3xl'> No meetings found.</h1>
              </div>
                
             )}

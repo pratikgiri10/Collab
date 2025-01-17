@@ -184,14 +184,13 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     let consumerTransports = [];
     let videostream;
 
-    const roomId = location.state.roomId;
-    const userName = 'Pratik'
+    const {roomId} = location.state;
     console.log('roomid: ',roomId);
+    const userName = "Pratik"
   
     useEffect(() => {
        console.log('remotetype: ',remoteType)
     }, [remoteType]);
-    
 
     useEffect(() => {
         // connect the socket

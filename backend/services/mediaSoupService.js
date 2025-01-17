@@ -12,9 +12,6 @@ async function createWorker(){
         logLevel: 'warn',
     });
     console.log(`WorkerPid: ${worker.pid}`);
-
-    // router = await worker.createRouter({mediaCodecs});
-    // console.log(`Router: ${router}`);
     
 }
 createWorker();
@@ -44,12 +41,6 @@ async function createRoom(roomId,socketId,rooms){
             })
             await newMeeting.save();
         }
-        
-        // console.log(`Router: ${router1}`);
-        // rtpCapabilities = router.rtpCapabilities;
-        // console.log('rtpCapabilities:',router.rtpCapabilities);
-       
-        // validRooms.push(roomId);
     }
     rooms[roomId] = { 
         router: router1,

@@ -2,7 +2,7 @@ import {socket} from '../../components/MeetingRoom/VideoRoom'
 // Keep track of messages even when chat isn't visible
 let messageBuffer = [];
 
-export async function message(text){
+export async function message(text, name){
    
     console.log('socket: ', socket);
   
@@ -10,13 +10,13 @@ export async function message(text){
             console.log('Sending message:', text);
             socket.emit('chat', {
                 content: text,
-                timestamp: Date.now()
+                sender: name,
+                timestamp: Date.now(),
+                socketId: socket.id
             });
         } catch (error) {
-            console.error('Error sending message:', error);
-            
+            console.error('Error sending message:', error);            
         }         
-    
    
 }
 
@@ -29,7 +29,7 @@ export function initializeChatListeners(onMessageReceived) {
             onMessageReceived(messages, socket.id, userId);
         } else {
             // Store messages if no handler is available
-            messages.forEach(msg => messageBuffer.push({msg, userId}));
+            messages.forEach(msg => messageBuffer.push({msg, socketId: socket.id, userId}));
         }
     });
 
@@ -40,7 +40,7 @@ export function initializeChatListeners(onMessageReceived) {
             onMessageReceived(msg, socket.id, userId);
         } else {
             // Store message if no handler is available
-            messageBuffer.push({msg, userId});
+            messageBuffer.push({msg, socketId: socket.id, userId});
         }
     });
 }

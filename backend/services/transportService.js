@@ -327,24 +327,6 @@ export async function initialize(io){
             }        
         })
     
-        // socket.on('createRecvTransport',async (rtpCapabilities,callback) => {
-        //     const roomId = peers[socket.id].roomId;
-        //     const router = rooms[roomId].router;
-        //     console.log("room id in crt: ",roomId);
-        //     try{
-        //         consumerTransport = await createWebRtcTransport();
-        //         console.log(`Consumer Transport created: ${consumerTransport}`);
-        //         callback({
-        //             id: consumerTransport.id,
-        //             iceParameters: consumerTransport.iceParameters,
-        //             iceCandidates: consumerTransport.iceCandidates,
-        //             dtlsParameters:consumerTransport.dtlsParameters
-        //         })
-        //     } catch(err){
-        //         console.log("error creating consumer transport: ",err);
-        //     }
-        // })
-    
         socket.on('consumer-connect',async({dtlsParameters,consumerTransportId}) => {
             const [consumerTransport] = transports.filter(transportData => transportData.transport.id === consumerTransportId&& transportData.consumer)
             // console.log('consumerTransport: ',consumerTransport);
@@ -420,9 +402,5 @@ export async function initialize(io){
                 console.log("consumer resumed");
             })
         })
-        
-    
-        
-        // console.log('router rtpCapabilities: ',rtpCapabilities);
     })
 }

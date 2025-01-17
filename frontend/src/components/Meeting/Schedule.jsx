@@ -83,7 +83,7 @@ const Schedule = () => {
     <div className='bg-[#044c69] flex h-screen w-screen items-center justify-center'>
         <div className='px-12 py-8 bg-white rounded-xl shadow-lg shadow-cyan-800 w-2/5'>
             <h1 className='text-3xl font-semibold  text-black'>Schedule Meeting</h1>
-            <h1 className='border-b-2 border-black w-24'></h1>
+            <h1 className='border-b-2 border-black w-64'></h1>
                 <form
                 onSubmit={(e) => {
                   handleSubmit(e);

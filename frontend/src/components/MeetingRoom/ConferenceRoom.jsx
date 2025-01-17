@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import { useLocation } from 'react-router-dom'
 import VideoRoom from './VideoRoom'
 import ChatRoom from './ChatRoom'
 import ParticipantList from './ParticipantList'
@@ -7,10 +8,15 @@ import {quickSort } from './Sortname.js'
 import { initializeChatListeners, getBufferedMessages } from '../../services/Chat/chatService.js'
 
 const ConferenceRoom = () => {
+  const location  = useLocation();
   const [isChatVisible, setIsChatVisible] = useState(false);
   const [messages, setMessages] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [isParticipantVisible, setIsParticipantVisible] = useState(false);
+
+  const { name } = location.state;
+
+
   async function handleParticipant(roomId){
     if(isParticipantVisible){
       setIsParticipantVisible(!isParticipantVisible)
@@ -41,10 +47,10 @@ const ConferenceRoom = () => {
   const recvMessage = (msg,userId, remoteUserId) => {
     if (Array.isArray(msg)) {
       msg.forEach(elem => {
-        setMessages(prev => [...prev, {content: elem.content, userId, remoteUserId}]);
+        setMessages(prev => [...prev, {content: elem.content, sender: elem.sender, userId, remoteUserId: elem.socketId}]);
       });
     } else {
-      setMessages(prev => [...prev, {content: msg.content, userId, remoteUserId}]);
+      setMessages(prev => [...prev, {content: msg.content,sender: msg.sender, userId, remoteUserId: msg.socketId}]);
     }
       
     }
@@ -57,8 +63,8 @@ useEffect(() => {
 useEffect(() => {
   if (isChatVisible) {
       const bufferedMessages = getBufferedMessages();
-      bufferedMessages.forEach(({msg, userId}) => {
-          recvMessage(msg, socket.id, userId);
+      bufferedMessages.forEach(({msg, socketId, userId}) => {
+          recvMessage(msg, socketId, userId);
       });
   }
 }, [isChatVisible]);

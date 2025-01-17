@@ -50,7 +50,7 @@ const RoomManagement = () => {
         <table className="table-auto w-full text-left">
           <thead className="bg-[#044c69] text-white">
             <tr>
-              {/* <th className="px-4 py-2">ID</th> */}
+              <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Room Id</th>
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2">Host</th>
@@ -61,7 +61,7 @@ const RoomManagement = () => {
           <tbody>
             {rooms.map((room) => (
               <tr key={room._id} className="hover:bg-zinc-300">
-                {/* <td className="px-4 py-2">{room._id}</td> */}
+                <td className="px-4 py-2">{room._id}</td>
                 <td className="px-4 py-2">{room.roomId}</td>
                 <td className="px-4 py-2">{new Date(room.updatedAt).toLocaleString()}</td>
                 <td className="px-4 py-2">{room.host.host.name}</td>

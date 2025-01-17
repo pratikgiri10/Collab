@@ -16,7 +16,7 @@ const JoinRoom = () => {
   
       if(response.data.valid){
         console.log('response: ',response);
-        navigate('/meetingroom', {state : { roomId : meetingId }})
+        navigate('/meetingroom', {state : { roomId : meetingId, name: response.data.name }})
       } 
       else{
         console.log('not valid')
@@ -28,7 +28,7 @@ const JoinRoom = () => {
     <div className='bg-[#044c69] flex h-screen w-screen items-center justify-center'>
         <div className='px-12 py-8 bg-white rounded-xl shadow-lg shadow-cyan-800'>
           <h1 className='text-3xl font-semibold  text-black '>Join Meeting</h1>
-          <h1 className='border-b-2 border-black w-24'></h1>
+          <h1 className='border-b-2 border-black w-48'></h1>
             <form
             onSubmit={(e) => {
               handleSubmit(e);

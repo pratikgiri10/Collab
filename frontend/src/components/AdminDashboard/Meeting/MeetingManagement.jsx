@@ -64,7 +64,7 @@ const MeetingManagement = () => {
           <div className="flex justify-between items-center mb-4">
             <input
               type="text"
-              placeholder="Search users..."
+              placeholder="search meetings..."
               className="border border-[#044c69] rounded-lg px-4 py-2 w-1/2"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}

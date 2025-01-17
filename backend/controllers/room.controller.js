@@ -7,6 +7,7 @@ export function createRoom(){
 export async function joinRoom(req,res){
     const {meetingId, password} = req.body;
     const meeting = await Schedule.findOne({meetingId, password});
+    const { name } = await User.findOne({email: req.session.user.username});
     console.log(meeting);
     
     if (meeting) {
@@ -14,7 +15,7 @@ export async function joinRoom(req,res){
      console.log(_id)
      const user = await Room.findOneAndUpdate({roomId: meetingId}, {$addToSet: {participants: _id}}, {new: true});
      console.log('user update: ',user)
-      return res.json({ valid: true });
+      return res.json({ valid: true, name: name });
 
     } else {
       return res.json({ valid: false });
@@ -30,4 +31,8 @@ export async function getParticipants(req,res){
 }
 export function leaveRoom(){
 
+}
+export async function getUserName(req,res){
+  const { name } = await User.findOne({email: req.session.user.username});
+  res.send({name})
 }

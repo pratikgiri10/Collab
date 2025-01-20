@@ -12,13 +12,14 @@ const meetingSchema = new mongoose.Schema({
     participants: [
         { 
             type: mongoose.Schema.Types.ObjectId, 
-            ref: 'User' 
+            ref: 'User' ,
+            role: {
+                type: String,
+                enum: ['admin','host','participant']
+            }
         }
     ],
-    role: {
-        type: String,
-        enum: ['admin','host','participants']
-    }
+    
     
   }, { timestamps: true });
   

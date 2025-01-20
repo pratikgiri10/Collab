@@ -26,23 +26,6 @@ const ScheduleDetails = () => {
     (detail) =>
       detail.title.toLowerCase().includes(searchVal.toLowerCase()) 
   );
-    // const searchMeeting = (searchVal) => {
-    //   console.log('search meeting: ',details);
-    //   console.log('search val: ',searchVal);
-    //   if(searchVal == ""){
-    //     setDetails(resData);
-    //     return;
-    //   }
-    //     const result =  resData.filter((data) => data.title == searchVal);
-    //     console.log("result: ",result);
-    //     if(result){
-    //       setDetails(result);
-    //     }
-        
-        
-      
-  
-    // }
 
    useEffect(() => {
     const meetingDetails = async () => {
@@ -63,10 +46,18 @@ const ScheduleDetails = () => {
       navigate('/schedulemeeting', { state : { selectData }})
     }
    }
-   const startMeeting = (roomId) => {
+   const startMeeting = async (roomId) => {
     if(roomId){
-      console.log(roomId)
-      navigate('/meetingroom',{state: {roomId: roomId}})
+        const getRole = async () => {
+           const response = await axios.get(`http://localhost:3000/api/meeting/getRole/${roomId}`,{
+               withCredentials: true
+           })
+           console.log("role: ",response);   
+           return response.data;        
+       }
+        const role = await getRole();
+        navigate('/meetingroom',{state: {roomId: roomId, role: role}})
+     
 
     }
    }  

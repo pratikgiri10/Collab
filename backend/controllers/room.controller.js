@@ -13,7 +13,9 @@ export async function joinRoom(req,res){
     if (meeting) {
      const { _id } = await User.findOne({email: req.session.user.username});
      console.log(_id)
-     const user = await Room.findOneAndUpdate({roomId: meetingId}, {$addToSet: {participants: _id}}, {new: true});
+     const user = await Room.findOneAndUpdate({roomId: meetingId}, {$push: {
+      participants: { _id: _id, role: "participant" }}// Add a new participant
+    },{new: true});
      console.log('user update: ',user)
       return res.json({ valid: true, name: name });
 

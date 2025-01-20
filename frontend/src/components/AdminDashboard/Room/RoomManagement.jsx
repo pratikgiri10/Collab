@@ -64,11 +64,9 @@ const RoomManagement = () => {
                 <td className="px-4 py-2">{room._id}</td>
                 <td className="px-4 py-2">{room.roomId}</td>
                 <td className="px-4 py-2">{new Date(room.updatedAt).toLocaleString()}</td>
-                <td className="px-4 py-2">{room.host.host.name}</td>
-       
+                <td className="px-4 py-2">{room.host.host.name}</td>       
                {room.participants.map((user) => {
-                {console.log(user.name)}
-                   return <td key={user._id} className="px-4 py-2 flex flex-col">{user.name}</td>
+                   return <td key={user._id} className="px-4 py-2 flex flex-col justify-center items-center">{user.name}</td>
                 })}
                 <td className="px-4 py-2">
                   <button

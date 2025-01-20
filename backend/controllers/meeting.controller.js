@@ -20,7 +20,6 @@ export async function scheduleMeeting(req,res){
         duration: duration,
         host: _id,
         isHost: true,
-        user: req.session.user.username,
         meetingId: meetingID,
         password: meetingPassword
     });
@@ -28,7 +27,10 @@ export async function scheduleMeeting(req,res){
     res.send(scheduleDetails);
 }
 export async function meetingDetails(req,res){
-    const meetingDetails = await Schedule.find({user: req.session.user.username});
+    const meetingDetails = await Schedule.find({}).populate({
+        path: 'host',
+        match: {email: req.session.user.username}
+    });
     if(meetingDetails){
         console.log('meeting details: ',meetingDetails);
         res.send(meetingDetails);
@@ -67,4 +69,26 @@ export async function deleteMeeting(req,res){
     await Schedule.findOneAndDelete({meetingId: id});
     console.log('deleted');
     res.send({isDeleted: true});
+}
+export async function updateParticipants(req,res){
+    const {meetingId} = req.params;
+    const meeting = await Schedule.findOne({meetingId});
+    if (meeting) {
+     const { _id } = await User.findOne({email: req.session.user.username});
+     console.log(_id)
+     const user = await Schedule.findOneAndUpdate({roomId: meetingId}, {$set: {"participants": _id, "participants.$.role": 'participant'}}, {new: true});
+     console.log('user update: ',user)
+      return res.json({ valid: true});
+
+    } else {
+      return res.json({ valid: false });
+    }
+}
+export async function getRole(req,res){
+    const { id } = req.params;
+    const { isHost } = await Schedule.findOne({meetingId: id});
+   
+        res.send(isHost)
+
+
 }

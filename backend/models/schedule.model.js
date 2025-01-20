@@ -24,14 +24,15 @@ const scheduleSchema = new mongoose.Schema({
         {
           type: mongoose.Schema.Types.ObjectId, // Reference to participants (users)
           ref: 'User',
+          role: {
+            type: String,
+            enum: ['admin','host','participant']
+          }
         },
     ],
     isHost: {
         type: Boolean,
         default: true
-    },
-    user: {
-        type: String
     },
     meetingId: {
         type: String,

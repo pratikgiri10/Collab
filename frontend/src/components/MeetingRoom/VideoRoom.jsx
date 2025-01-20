@@ -65,6 +65,7 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isVideoOn, setIsVideoOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
+    const [isHost, setIsHost] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef({});
     const remoteAudioRef = useRef({})
@@ -185,9 +186,21 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     let videostream;
 
     const {roomId} = location.state;
+    const {role} = location.state;
     console.log('roomid: ',roomId);
     const userName = "Pratik"
-  
+    useEffect(() => {
+     if(role){
+        setIsHost(true)
+        alert('you are a host now')
+     }
+     else{
+        setIsHost(false)
+        alert('you are a participant')
+     }
+    }, [])
+    
+    
     useEffect(() => {
        console.log('remotetype: ',remoteType)
     }, [remoteType]);
@@ -600,9 +613,9 @@ async function consume(remoteProducerId,consumerTransportId,recvTransport){
                 <button 
                 onClick={disconnectSocket}
                 className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'><IoIosCloseCircle size='20'/>Leave</button>
-                <button 
+                {isHost && (<button 
                 onClick={disconnectServerSocket}
-                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'><IoIosCloseCircle size='20'/>End</button>
+                className='bg-[#044c69] p-2 md:px-4 md:py-2 flex flex-col items-center'><IoIosCloseCircle size='20'/>End</button>)}
             </div>
         </div>
     </div>

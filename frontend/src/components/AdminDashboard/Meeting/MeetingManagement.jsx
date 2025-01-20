@@ -39,7 +39,7 @@ const MeetingManagement = () => {
       withCredentials: true
     })
     if(response.data.isDeleted){
-      const updatedMeetings = meetings.filter((meeting) => meeting.id !== id);
+      const updatedMeetings = meetings.filter((meeting) => meeting._id !== id);
       setMeetings(updatedMeetings);
       alert("Meeting deleted successfully!");
     }
@@ -109,7 +109,7 @@ const MeetingManagement = () => {
                     Edit
                   </button>
                   <button
-                     onClick={() => deleteMeeting(meeting.id)}
+                     onClick={() => deleteMeeting(meeting._id)}
                     className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
                   >
                     Delete

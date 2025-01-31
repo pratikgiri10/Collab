@@ -9,13 +9,15 @@ const Sidebar = () => {
 
  
   const handleLogOut = async () => {
-    const response = await axios.get('http://localhost:3000/api/admin/session/destroy');
+    const response = await axios.get('http://localhost:3000/api/adminAuth/session/destroy', {
+      withCredentials: true
+    });
     if(response){
       navigate('/admin/login')
     }
   }
   return (
-    <div className="w-64 h-screen bg-[#033750] text-white flex flex-col">
+    <div className="w-64 h-screen bg-[#033750] text-white flex flex-col fixed top-0 left-0">
       {/* Header */}
       <div className=" bg-white px-6 py-3 text-center">
         <img className="h-14 w-auto " src={logo} alt="" />

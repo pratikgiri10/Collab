@@ -7,20 +7,15 @@ const RoomManagement = () => {
   const [rooms, setRooms] = useState([])
   useEffect(() => {
     const getRooms = async () => {
-      const response = await axios.get('http://localhost:3000/api/admin/session/check',{
+     
+      const response  = await axios.get('http://localhost:3000/api/admin/activeSessions', {
         withCredentials: true
-    })
-    if(!response.data.loggedIn){
-      console.log(response);
-      navigate('/admin/login')
-    }
-    else{
-      const response  = await axios.get('http://localhost:3000/api/admin/roomDetail');
+      });
       if(response.data){
         console.log(response.data)
         setRooms(response.data);
       }
-    }
+    
     }
     getRooms();
   }, [])
@@ -40,9 +35,9 @@ const RoomManagement = () => {
   };
 
   return (
-    <div className=" bg-white flex w-full">
+    <div className=" bg-white flex w-full relative">
         <Sidebar />
-        <div className="p-6 w-[80%]">
+        <div className="p-6 w-[80%] absolute right-0">
         <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-6">Room Management</h1>
 
       {/* Meetings Table */}
@@ -62,12 +57,15 @@ const RoomManagement = () => {
             {rooms.map((room) => (
               <tr key={room._id} className="hover:bg-zinc-300">
                 <td className="px-4 py-2">{room._id}</td>
-                <td className="px-4 py-2">{room.roomId}</td>
+                <td className="px-4 py-2">{room.meetingId}</td>
                 <td className="px-4 py-2">{new Date(room.updatedAt).toLocaleString()}</td>
-                <td className="px-4 py-2">{room.host.host.name}</td>       
+                <td className="px-4 py-2">{room.host.name}</td>       
                {room.participants.map((user) => {
                    return <td key={user._id} className="px-4 py-2 flex flex-col justify-center items-center">{user.name}</td>
-                })}
+                })} 
+                {room.participants.length === 0 && (
+                  <td className="px-4 py-2 flex flex-col justify-center items-center">_</td>
+               )}
                 <td className="px-4 py-2">
                   <button
                     onClick={() => deleteRoom(room,room._id)}

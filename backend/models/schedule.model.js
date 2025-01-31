@@ -30,6 +30,9 @@ const scheduleSchema = new mongoose.Schema({
           }
         },
     ],
+    user: {
+        type: String
+    },
     isHost: {
         type: Boolean,
         default: true
@@ -41,6 +44,10 @@ const scheduleSchema = new mongoose.Schema({
     },
     password: {
         type: String
+    },
+    status: {
+        type: String,
+        default: 'inactive'
     }
 },{ timestamps: true });
 

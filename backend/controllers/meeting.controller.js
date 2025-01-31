@@ -19,6 +19,7 @@ export async function scheduleMeeting(req,res){
         startTime: startTime,
         duration: duration,
         host: _id,
+        user:req.session.user.username,
         isHost: true,
         meetingId: meetingID,
         password: meetingPassword
@@ -27,10 +28,7 @@ export async function scheduleMeeting(req,res){
     res.send(scheduleDetails);
 }
 export async function meetingDetails(req,res){
-    const meetingDetails = await Schedule.find({}).populate({
-        path: 'host',
-        match: {email: req.session.user.username}
-    });
+    const meetingDetails = await Schedule.find({user: req.session.user.username});
     if(meetingDetails){
         console.log('meeting details: ',meetingDetails);
         res.send(meetingDetails);
@@ -45,6 +43,15 @@ export async function getByMeetingId(req,res){
     console.log('meeting id: ',id);
     const meetingId = await Schedule.find({meetingId: id});
     res.send(meetingId);
+}
+export async function setStatus(req,res){
+    console.log('setting status')
+    const {roomId} = req.body;
+    const result = await Schedule.findOneAndUpdate({meetingId: roomId},{status: 'active'},{new: true});
+    if(result){
+        console.log("status:", result);
+        res.send({success: true})
+    }
 }
 export async function updateByMeetingId(req,res){
    
@@ -76,7 +83,7 @@ export async function updateParticipants(req,res){
     if (meeting) {
      const { _id } = await User.findOne({email: req.session.user.username});
      console.log(_id)
-     const user = await Schedule.findOneAndUpdate({roomId: meetingId}, {$set: {"participants": _id, "participants.$.role": 'participant'}}, {new: true});
+     const user = await Schedule.findOneAndUpdate({roomId: meetingId}, {$push: {_id: _id, role: 'participant'}}, {new: true});
      console.log('user update: ',user)
       return res.json({ valid: true});
 

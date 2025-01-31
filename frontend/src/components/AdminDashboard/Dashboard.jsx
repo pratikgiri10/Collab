@@ -27,63 +27,45 @@ ChartJS.register(
 const Dashboard = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([])
-  const [session, setSession] = useState(false);
-  useEffect(( )=> {
-    const checkSession = async () => {
-      const response = await axios.get('http://localhost:3000/api/admin/session/check',{
-        withCredentials: true
-      })
-      setSession(response.data.loggedIn)
-    }
-    checkSession()
-  },[])
+ 
+  
   useEffect(() => {
     setData([])
     const checkSession = async () => {
-      const response = await axios.get('http://localhost:3000/api/admin/session/check',{
+      const response = await axios.get('http://localhost:3000/api/adminAuth/session/check',{
         withCredentials: true
       })
       return response.data.loggedIn
     }
    const getTotalUsers = async () => {
-   const session = await checkSession()
-    if(!session){
-      console.log(session);
-      navigate('/admin/login')
-    }
-    else{
-      const response = await axios.get('http://localhost:3000/api/admin/totalUsers');
+  const response = await axios.get('http://localhost:3000/api/admin/totalUsers',{
+        withCredentials: true
+      });
       if(response.data){
         console.log(response.data)
         setData((prev) => [...prev,{label: "Total Users", value: response.data.length, color: "bg-blue-500"}])
       }
-    }
+    
    }
    const getActiveRooms = async () => {
-    const session = await checkSession()
-    if(!session){
-      console.log(session);
-      navigate('/admin/login')
-    }
-    else{
-      const response = await axios.get('http://localhost:3000/api/admin/activeRooms');
+   
+      const response = await axios.get('http://localhost:3000/api/admin/activeRooms',{
+        withCredentials: true
+      });
       if(response.data){
         setData((prev) => [...prev,{label: "Active Rooms", value: response.data.length, color: "bg-green-500"}])
       }
-    }
+    
    }
    const getTotalMeetings = async () => {
-    const session = await checkSession()
-    if(!session){
-      console.log(session);
-      navigate('/admin/login')
-    }
-    else{
-      const response = await axios.get('http://localhost:3000/api/admin/totalMeetings');
+   
+      const response = await axios.get('http://localhost:3000/api/admin/totalMeetings', {
+        withCredentials: true
+      });
       if(response.data){
         setData((prev) => [...prev,{label: "Scheduled Meetings", value: response.data.length, color: "bg-purple-500"}])
       }
-    }
+    
    }
    getTotalUsers()
    getTotalMeetings()
@@ -112,9 +94,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="bg-white flex gap-4 w-full h-screen overflow-hidden">
+    <div className="bg-white flex gap-4 w-full h-screen overflow-hidden relative">
         <Sidebar/>
-        <div className="flex flex-col gap-4 p-4 w-[80%] h-screen">
+        <div className="flex flex-col gap-4 p-4 w-[80%] h-screen absolute right-0">
         <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-2">Dashboard</h1>
             {/* Statistics Section */}
             <div className="flex justify-between">
@@ -131,12 +113,12 @@ const Dashboard = () => {
             </div>
 
             {/* Graph Section */}
-            {session && <div className="flex justify-center w-[80%]">
+            <div className="flex justify-center w-[80%]">
               <div className="rounded-lg shadow-md w-full">
                   <h2 className="text-xl font-bold text-gray-800">Engagement Trends</h2>
                   <Line data={chartData} />
               </div>
-            </div>}
+            </div>
             
         </div>
       

@@ -57,7 +57,7 @@ export const Login = async (req,res) => {
 }
 export async function checkSession(req,res){
     if(req.session.user){
-        console.log('session found');
+        console.log('session found', req.session.user);
         res.send({name: req.session.user, loggedIn: true})
        
     }        

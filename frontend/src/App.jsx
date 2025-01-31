@@ -20,6 +20,8 @@ import Dashboard from './components/AdminDashboard/Dashboard'
 import RoomManagement from './components/AdminDashboard/Room/RoomManagement'
 import UserForm from './components/AdminDashboard/User/UserForm'
 import MeetingForm from './components/AdminDashboard/Meeting/MeetingForm'
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+
 
 
 function App() {
@@ -30,14 +32,19 @@ function App() {
       <Route path='/' element={<Home/>}></Route>
       <Route path='/signin' element={<Signin />}></Route>      
       <Route path='/admin/login' element={<AdminLogin />}></Route>
-      <Route path='/admin/sidebar' element={<Sidebar />}></Route>
-      <Route path='/admin/users' element={<UserManagement />}></Route>
-      <Route path='/admin/userForm' element={<UserForm />}></Route>
-      <Route path='/admin/meetings' element={<MeetingManagement />}></Route>
-      <Route path='/admin/meetingForm' element={<MeetingForm />}></Route>
-      <Route path='/admin/settings' element={<Settings />}></Route>
-      <Route path='/admin/dashboard' element={<Dashboard />}></Route>
-      <Route path='/admin/rooms' element={<RoomManagement />}></Route>
+      
+      <Route element={<ProtectedRoute />}>
+        <Route path='/admin/dashboard' element={<Dashboard />}></Route>
+        <Route path='/admin/rooms' element={<RoomManagement />}></Route>   
+        <Route path='/admin/sidebar' element={<Sidebar />}></Route>
+        <Route path='/admin/users' element={<UserManagement />}></Route>
+        <Route path='/admin/userForm' element={<UserForm />}></Route>
+        <Route path='/admin/meetings' element={<MeetingManagement />}></Route>
+        <Route path='/admin/meetingForm' element={<MeetingForm />}></Route>
+        <Route path='/admin/settings' element={<Settings />}></Route>     
+      </Route>
+     
+      
       <Route path='/signup' element={<Signup />}></Route>
       <Route path='/meetingroom' element={<ConferenceRoom />}></Route>
       <Route path='/chatroom' element={<ChatRoom />}></Route>

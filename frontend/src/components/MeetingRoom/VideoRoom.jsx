@@ -4,7 +4,7 @@ import socket from "../../services/Socket/socket";
 import { initializeDevice } from '../../services/MediaSoup/initializeDevice';
 import { chatroom } from '../../services/MediaSoup/room';
 import { forwardRef } from 'react';
-import {NavigationType, useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { AiTwotoneAudio } from "react-icons/ai";
@@ -65,6 +65,7 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isVideoOn, setIsVideoOn] = useState(true);
     const [isAudioOn, setIsAudioOn] = useState(true);
+    const [screenShared, setScreenShared] = useState(false);
     const [isHost, setIsHost] = useState(false);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef({});
@@ -190,14 +191,24 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     console.log('roomid: ',roomId);
     const userName = "Pratik"
     useEffect(() => {
-     if(role){
-        setIsHost(true)
-        alert('you are a host now')
-     }
-     else{
-        setIsHost(false)
-        alert('you are a participant')
-     }
+        const setStatus = async() => {
+            if(role && roomId){
+                setIsHost(true)
+                const response = await axios.put('http://localhost:3000/api/meeting/updateStatus',{roomId},{
+                    headers: {
+                        'Content-Type': 'application/json',
+                      },
+                    withCredentials: true
+                  })
+                // alert('you are a host now')
+             }
+             else{
+                setIsHost(false)
+                alert('you are a participant')
+             }
+        }
+        setStatus()
+    
     }, [])
     
     
@@ -308,10 +319,11 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     
                 sendTransport.on('produce',async (parameters,callback,errback) => {
                     try{
-                        console.log('produce event')
+                        console.log('produce event: ',parameters)
                         const { id } = socket.emit('produce',{
                             id: sendTransport.id,
                             kind: parameters.kind,
+                            appData: parameters.appData,
                             rtpParameters: parameters.rtpParameters
                         },({id,producerExists}) => {
                             console.log("producer exists: ",producerExists);
@@ -361,6 +373,7 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
             console.log('before producing')
             videoProducer = await sendTransport.produce({
                 track: videoTrack,
+                appData: { type: 'webcam'},
                 encodings: [
                     { maxBitrate: 100000 }, // Low resolution
                     { maxBitrate: 300000 }, // Medium resolution
@@ -372,7 +385,7 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
     
             });
             setPauseProducer(videoProducer);
-            audioProducer = await sendTransport.produce({track: audioTrack});
+            audioProducer = await sendTransport.produce({track: audioTrack,appData: { type: 'audio'}});
             
             setAudioProducerPause(audioProducer);
             console.log("produced media")
@@ -397,12 +410,23 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
             console.log('producing screen capture')
             const screenTrack = screenCapture.getVideoTracks()[0];
             console.log('screen track: ',screenTrack)
+            // Listen for the 'ended' event on the video track
+            screenTrack.onended = () => {
+               
+                socket.emit("stopScreen",{}, async ({producer}) => {
+                    console.log("Screen sharing stopped by the user:", producer);
+                })
+               
+                // handleStopSharing(); // Your custom logic when sharing stops
+            };
             console.log('send transport : ',producerTransport)
             try{
                 screenProducer = await producerTransport.produce({
                     track: screenTrack,
+                    appData: {type: 'screen'}
                    
                 });
+                setScreenShared(true);
             }catch(err){
                 console.log("screen capture failed: ",err);
             }
@@ -410,7 +434,10 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
             console.log('screen shared');
         }
         
-    }
+     }
+        
+        
+    
 
     //get producers list
     async function getProducers(){

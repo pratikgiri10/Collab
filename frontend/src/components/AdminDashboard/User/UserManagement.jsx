@@ -7,21 +7,16 @@ const UserManagement = () => {
   // Sample user data
   useEffect(() => {
     const getUsers = async () => {
-      const response = await axios.get('http://localhost:3000/api/admin/session/check',{
+    
+        const response = await axios.get('http://localhost:3000/api/admin/getUsers', {
           withCredentials: true
-      })
-      if(!response.data.loggedIn){
-        console.log(response);
-        navigate('/admin/login')
-      }
-      else{
-        const response = await axios.get('http://localhost:3000/api/admin/getUsers');
+        });
 
         if(response.data){
           console.log(response.data);
           setUsers(response.data)
         }
-      }
+      
      
      
   }
@@ -57,9 +52,9 @@ const UserManagement = () => {
     }
   }
   return (
-   <div className="bg-white flex w-full">
+   <div className="bg-white flex w-full relative">
       <Sidebar />
-      <div className="p-6 w-[80%]">
+      <div className="p-6 w-[80%] absolute right-0">
       <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-6">User Management</h1>
 
       {/* Search Bar and Add User Button */}

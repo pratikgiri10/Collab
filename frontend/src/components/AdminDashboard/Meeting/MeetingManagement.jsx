@@ -9,19 +9,14 @@ const MeetingManagement = () => {
   
 
   useEffect(() => {
-    const getMeetings = async () => {
-      const response = await axios.get('http://localhost:3000/api/admin/session/check',{
+    const getMeetings = async () => {     
+      const response  = await axios.get('http://localhost:3000/api/admin/scheduledMeetings', {
         withCredentials: true
-    })
-    if(!response.data.loggedIn){
-      console.log(response);
-      navigate('/admin/login')
-    }else{
-      const response  = await axios.get('http://localhost:3000/api/admin/scheduledMeetings');
+      });
       if(response.data){
         setMeetings(response.data);
       }
-    }
+    
       
     }
     getMeetings();
@@ -56,9 +51,9 @@ const MeetingManagement = () => {
   }
 
   return (
-    <div className=" bg-white flex w-full">
+    <div className=" bg-white flex w-full relative">
         <Sidebar />
-        <div className="p-6 w-[80%]">
+        <div className="p-6 w-[80%] absolute right-0">
           
           <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-6">Meeting Management</h1>
           <div className="flex justify-between items-center mb-4">

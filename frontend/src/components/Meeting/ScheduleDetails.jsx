@@ -56,6 +56,7 @@ const ScheduleDetails = () => {
            return response.data;        
        }
         const role = await getRole();
+       
         navigate('/meetingroom',{state: {roomId: roomId, role: role}})
      
 

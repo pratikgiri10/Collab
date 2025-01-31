@@ -160,7 +160,15 @@ export async function initialize(io){
             
            
         })
-       
+       socket.on('stopScreen',async (_,callback) => {
+        // producers.map(({producer}) => {
+        //     console.log('appData: ',producer.track)
+        // })
+        const [producer] = producers.filter(producer => producer.socketId === socket.id && producer.appData.type == "screen");
+            console.log('producer:',producer);
+            producer.producer.close();
+            callback(producer);
+       })
         socket.on('room',async (data,callback) => {
           
             const roomId = data.roomId;
@@ -273,7 +281,8 @@ export async function initialize(io){
               })
         }
     
-        socket.on('produce',async({kind, rtpParameters},callback) => {
+        socket.on('produce',async({kind,appData,rtpParameters},callback) => {
+          
             // const producerTransport = peers[socket.id].transports;
             // filtering producer transport from transport array
             const [producerTransport] = transports.filter(transport => transport.socketId === socket.id && !transport.consumer)
@@ -297,7 +306,7 @@ export async function initialize(io){
                 //adding producer to producers
                 producers = [
                     ...producers,
-                    {producer,socketId: socket.id,roomId,kind}
+                    {producer,socketId: socket.id,roomId,kind, appData}
                 ]
                 console.log("producers: ",producers);
                 // console.log("producers id: ",producers.producer);

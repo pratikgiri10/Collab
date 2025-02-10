@@ -8,7 +8,7 @@ const RoomManagement = () => {
   useEffect(() => {
     const getRooms = async () => {
      
-      const response  = await axios.get('http://localhost:3000/api/admin/activeSessions', {
+      const response  = await axios.get('http://localhost:3000/api/admin/roomDetail', {
         withCredentials: true
       });
       if(response.data){
@@ -57,9 +57,10 @@ const RoomManagement = () => {
             {rooms.map((room) => (
               <tr key={room._id} className="hover:bg-zinc-300">
                 <td className="px-4 py-2">{room._id}</td>
-                <td className="px-4 py-2">{room.meetingId}</td>
+                <td className="px-4 py-2">{room.roomId}</td>
                 <td className="px-4 py-2">{new Date(room.updatedAt).toLocaleString()}</td>
-                <td className="px-4 py-2">{room.host.name}</td>       
+                <td className="px-4 py-2">{room.host.host.name}</td> 
+              {/* {console.log(room.host.host.name)} */}
                {room.participants.map((user) => {
                    return <td key={user._id} className="px-4 py-2 flex flex-col justify-center items-center">{user.name}</td>
                 })} 

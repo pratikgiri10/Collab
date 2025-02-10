@@ -95,10 +95,28 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
         window.location.reload();
     }
 
-    const disconnectServerSocket = () => {
-        navigate('/');
-        window.location.reload();
-        socket.emit('endMeeting',roomId);
+    const disconnectServerSocket = async () => {
+        const response = await axios.put('http://localhost:3000/api/meeting/updateStatus',{roomId, status: 'completed'},{
+            headers: {
+                'Content-Type': 'application/json',
+              },
+            withCredentials: true
+          })
+        const result = await axios.put('http://localhost:3000/api/rooms/updateStatus',{roomId, status: 'completed'},{
+            headers: {
+                'Content-Type': 'application/json',
+              },
+            withCredentials: true
+          })
+          console.log(response.data)
+          console.log(result.data)
+          if(result.data && response.data){
+            console.log('end meeting')
+            navigate('/');
+            window.location.reload();
+            socket.emit('endMeeting',roomId);
+          }
+       
     }
 
     const toggleVideo = () => {
@@ -194,13 +212,13 @@ const VideoRoom = ({isChatVisible, toggleChat, handleParticipant}) => {
         const setStatus = async() => {
             if(role && roomId){
                 setIsHost(true)
-                const response = await axios.put('http://localhost:3000/api/meeting/updateStatus',{roomId},{
+                const response = await axios.put('http://localhost:3000/api/meeting/updateStatus',{roomId, status: 'active'},{
                     headers: {
                         'Content-Type': 'application/json',
                       },
                     withCredentials: true
                   })
-                // alert('you are a host now')
+                alert('you are a host now')
              }
              else{
                 setIsHost(false)

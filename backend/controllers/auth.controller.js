@@ -20,7 +20,7 @@ export async function login(req,res){
                         console.log(err);
                         return next(err)
                     } 
-                    res.send({valid: true});
+                    res.send({valid: true, role: data.role});
                   })
             }
             else{

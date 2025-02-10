@@ -46,8 +46,8 @@ export async function getByMeetingId(req,res){
 }
 export async function setStatus(req,res){
     console.log('setting status')
-    const {roomId} = req.body;
-    const result = await Schedule.findOneAndUpdate({meetingId: roomId},{status: 'active'},{new: true});
+    const {roomId, status} = req.body;
+    const result = await Schedule.findOneAndUpdate({meetingId: roomId},{status: status},{new: true});
     if(result){
         console.log("status:", result);
         res.send({success: true})

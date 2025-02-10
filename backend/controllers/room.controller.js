@@ -1,9 +1,7 @@
 import Schedule from '../models/schedule.model.js';
 import User from '../models/user.model.js';
 import Room from '../models/meeting.model.js';
-export function createRoom(){
 
-}
 export async function joinRoom(req,res){
     const {meetingId, password} = req.body;
     const meeting = await Schedule.findOne({meetingId, password});
@@ -31,8 +29,18 @@ export async function getParticipants(req,res){
   console.log('user: ',users);
   res.send(users);
 }
-export function leaveRoom(){
-
+export async function setStatus(req,res){
+  console.log('setting status')
+  const {roomId, status} = req.body;
+  const result = await Room.findOneAndUpdate({roomId: roomId},{status: status},{new: true});
+  if(result){
+      console.log("status:", result);
+      res.send({success: true})
+  }
+  else{
+    console.log("status:", result);
+    res.send({success: false})
+  }
 }
 export async function getUserName(req,res){
   const { name } = await User.findOne({email: req.session.user.username});

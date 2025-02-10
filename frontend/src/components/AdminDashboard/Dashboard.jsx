@@ -38,18 +38,18 @@ const Dashboard = () => {
       return response.data.loggedIn
     }
    const getTotalUsers = async () => {
-  const response = await axios.get('http://localhost:3000/api/admin/totalUsers',{
+  const response = await axios.get('http://localhost:3000/api/admin/getUsers',{
         withCredentials: true
       });
       if(response.data){
         console.log(response.data)
-        setData((prev) => [...prev,{label: "Total Users", value: response.data.length, color: "bg-blue-500"}])
+        setData((prev) => [...prev,{label: "Total Users", value: response.data.length, color: "bg-yellow-500"}])
       }
     
    }
    const getActiveRooms = async () => {
    
-      const response = await axios.get('http://localhost:3000/api/admin/activeRooms',{
+      const response = await axios.get('http://localhost:3000/api/admin/activeSessions',{
         withCredentials: true
       });
       if(response.data){
@@ -57,18 +57,27 @@ const Dashboard = () => {
       }
     
    }
+   const getCompletedRooms = async() => {
+    const response = await axios.get('http://localhost:3000/api/admin/completedSessions',{
+      withCredentials: true
+    });
+    if(response.data){
+      setData((prev) => [...prev,{label: "Completed Meetings", value: response.data.length, color: "bg-blue-500"}])
+    }
+   }
    const getTotalMeetings = async () => {
    
-      const response = await axios.get('http://localhost:3000/api/admin/totalMeetings', {
+      const response = await axios.get('http://localhost:3000/api/admin/getMeetings', {
         withCredentials: true
       });
       if(response.data){
-        setData((prev) => [...prev,{label: "Scheduled Meetings", value: response.data.length, color: "bg-purple-500"}])
+        setData((prev) => [...prev,{label: "Total Meetings", value: response.data.length, color: "bg-purple-500"}])
       }
     
    }
    getTotalUsers()
    getTotalMeetings()
+   getCompletedRooms()
    getActiveRooms()
    
   }, [])
@@ -100,7 +109,7 @@ const Dashboard = () => {
         <h1 className="bg-[#044c69] w-full text-white text-2xl font-bold py-4 px-6 mb-2">Dashboard</h1>
             {/* Statistics Section */}
             <div className="flex justify-between">
-              {console.log(data)}
+              {/* {console.log(data)} */}
                 {data.map((stat, index) => (
                 <div
                     key={index}

@@ -1,17 +1,6 @@
 import User from "../../models/user.model.js"
 import bcrypt from 'bcrypt'
-export const viewUser = async (req,res) => {
-    try{
-        const users = await User.find({});
-        if(users){
-            console.log(users.length)
-            res.send(users);
-        }
-    }catch(err){
-        res.send({error: `failed to get data: ${err}`});
-    }
-    
-}
+
 export const addUser = async (req,res) => {
     const saltRounds = 10;
     try {

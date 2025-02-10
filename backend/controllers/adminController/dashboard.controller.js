@@ -23,9 +23,9 @@ export const getTotalMeetings = async (req,res) => {
         res.send({error: `failed to get data: ${err}`});
     }
 }
-export const getActiveRooms = async (req,res) => {
+export const getCompletedSessions = async (req,res) => {
     try{
-        const rooms = await Room.find({});
+        const rooms = await Room.find({status: 'completed'});
         if(rooms){
             console.log(rooms.length)
             res.send(rooms);
@@ -36,9 +36,9 @@ export const getActiveRooms = async (req,res) => {
 }
 export const getActiveSessions = async (req,res) => {
     try{
-        const rooms = await Room.find({});
+        const rooms = await Room.find({status: 'active'}).populate('host').populate('participants');
         if(rooms){
-            console.log(rooms.length)
+            console.log(rooms)
             res.send(rooms);
         }
     }catch(err){

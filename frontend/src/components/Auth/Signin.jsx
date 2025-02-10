@@ -26,19 +26,32 @@ const Signin = () => {
         withCredentials: true, // Include cookies
       });
       
-      if(response.data.valid){
-        console.log('response: ',response.data);
+      if(response.data.valid && response.data.role == 'user'){
+        console.log('response: ',response.data.role);
         const data =  await checkSession();
         if(data.loggedIn){
             console.log(data.user)
-            navigate('/');
-        }
+            navigate('/')
+        }       
         else{
             console.log(data.user)
             navigate('/signin');
         }
-        navigate('/')
-      } 
+        // navigate('/')
+      }
+      else if(response.data.valid && response.data.role == 'admin') {
+        console.log('response: ',response.data.role);
+        const data =  await checkSession();
+        if(data.loggedIn){
+            console.log(data.user)
+            navigate('/admin/dashboard')
+        }       
+        else{
+            console.log(data.user)
+            navigate('/signin');
+        }
+        // navigate('/admin/dashboard')
+      }
     }
     const togglePsw = (e) => {
       if(pswref.current.type == "password"){

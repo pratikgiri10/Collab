@@ -10,7 +10,7 @@ const MeetingManagement = () => {
 
   useEffect(() => {
     const getMeetings = async () => {     
-      const response  = await axios.get('http://localhost:3000/api/admin/scheduledMeetings', {
+      const response  = await axios.get('http://localhost:3000/api/admin/getMeetings', {
         withCredentials: true
       });
       if(response.data){

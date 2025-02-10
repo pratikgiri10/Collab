@@ -19,7 +19,10 @@ const meetingSchema = new mongoose.Schema({
             }
         }
     ],
-    
+    status: {
+        type: String,
+        default: 'active'
+    }
     
   }, { timestamps: true });
   

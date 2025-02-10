@@ -3,17 +3,7 @@ import User from "../../models/user.model.js"
 import { nanoid} from 'nanoid';
 import crypto from 'crypto';
 
-export const viewScheduledMeetings = async (req,res) => {
-    try{
-        const meetings = await Schedule.find({});
-        if(meetings){
-            console.log(meetings.length);
-            res.send(meetings)
-        }
-    }catch(err){
-        res.send(err)
-    }
-}
+
 export const addMeeting = async (req,res) => {
     const { title, description, startTime, duration} = req.body;
     // Generate Meeting ID

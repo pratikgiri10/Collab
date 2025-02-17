@@ -76,16 +76,9 @@ const handleSignOut = async () => {
   
 }
 const handleNavigation = async () => {
-  const res = await checkSession();
   
-  if(res){
-   
     navigate('/meetingdetails')
-  }
-  else{
-    
-    navigate('/signin');
-  }
+ 
 }
 const toggleMenu = () => {
   setIsOpen(!isOpen)
@@ -101,6 +94,9 @@ const toggleMenu = () => {
             <div className='hidden sm:flex gap-10 text-xl font-medium'>
                <Link to='/' className='flex gap-2 items-center hover:underline underline-offset-8'>Home</Link>
                <h1 onClick={handleNavigation} className='hover: cursor-pointer hover:underline underline-offset-8'>Meetings</h1>
+               <h1 onClick={() => {
+                navigate('/settings')
+               }} className='hover: cursor-pointer hover:underline underline-offset-8'>Settings</h1>
                
             </div>
             <div className='hidden sm:flex text-white' >

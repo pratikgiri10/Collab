@@ -79,6 +79,21 @@ const ScheduleDetails = () => {
     }
    
    }
+   const invite = async (data, e) => {
+    const {meetingId, password} = data
+    try{
+      const response = await axios.post('http://localhost:3000/api/users/sendMail',{
+        meetingId, password
+      },{
+        withCredentials: true
+      })
+      if(response.data.success){
+        alert("Invitation sent successfully")
+      }
+    }catch(err){
+      console.log(err)
+    }
+   }
   return (
     <div className='bg-white h-screen flex flex-col gap-6'>
        <nav className='flex justify-between items-center px-6 py-2 text-black'>
@@ -140,6 +155,11 @@ const ScheduleDetails = () => {
                   deleteMeeting(data.meetingId,e);
                 }}
                 className='bg-[#044c69] px-4 py-2'>Delete</button>
+                 <button 
+                onClick={(e) => {
+                  invite(data,e);
+                }}
+                className='bg-[#044c69] px-4 py-2'>Invite</button>
               </div>
         </div>
         })}

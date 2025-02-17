@@ -100,7 +100,41 @@ export async function destroySession(req,res){
         // res.send({success: true})
     }
     else{
-        res.send({msg: 'you have not legged in'})
+        res.send({msg: 'you have not logged in'})
     }
     
+}
+
+export async function forgotPassword(req,res) {
+    const {email} = req.params;
+     try{
+        const response = await User.find({email: email});
+        console.log(response)
+       if( response.length < 1 ){
+        res.json({success: false})
+       }
+       else{
+        res.json({success: true})
+       }
+        
+        
+     }
+     catch(err){
+        res.json(err)
+     }
+}
+export async function changePassword(req,res){
+    const {email} = req.params;
+    const { password} = req.body;
+
+     // Hash password
+     const salt = await bcrypt.genSalt(saltRounds);
+     const hashedPassword = await bcrypt.hash(password, salt);
+
+    try{
+        const response = await User.findOneAndUpdate({email: email}, {password: hashedPassword}, {new: true});
+        res.json({success: true})
+    }catch(err){
+        res.json(err)
+    }
 }

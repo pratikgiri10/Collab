@@ -13,7 +13,7 @@ const Sidebar = () => {
       withCredentials: true
     });
     if(response){
-      navigate('/admin/login')
+      navigate('/signin')
     }
   }
   return (

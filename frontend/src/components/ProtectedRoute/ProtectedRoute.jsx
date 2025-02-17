@@ -34,7 +34,7 @@ const ProtectedRoute = () => {
     return <div>Loading...</div>; // Show a loading spinner
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/admin/login" />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/signin" />;
 };
 
 export default ProtectedRoute;
